@@ -4,8 +4,12 @@ const cors = require('cors');
 
 const app = express();
 
+//port
+
+const PORT = process.env.PORT || 3000 ;
+
 var corOption = {
-    origin: 'https://localhost:3000'
+    origin: `https://localhost:${PORT}`
 }
 
 //middleware
@@ -22,10 +26,6 @@ app.use(express.urlencoded({extended: true}));
 const router = require('./routes/categoryRouter.js');
 
 app.use('/', router)
-
-//port
-
-const PORT = process.env.PORT || 3000 ;
 
 //server
 
