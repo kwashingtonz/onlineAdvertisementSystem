@@ -33,6 +33,12 @@ db.Sequelize = Sequelize
 db.sequelize = sequelize
 
 db.categories = require('./categoryModel.js')(sequelize, DataTypes)
+db.cities = require('./cityModel.js')(sequelize, DataTypes)
+db.itemconditions = require('./itemConditionModel.js')(sequelize, DataTypes)
+db.sellers = require('./sellerModel.js')(sequelize, DataTypes)
+db.items = require('./itemModel.js')(sequelize, DataTypes)
+db.itemimages = require('./itemImageModel.js')(sequelize, DataTypes)
+db.sellerimages = require('./sellerImageModel.js')(sequelize, DataTypes)
 
 db.sequelize.sync({ force: false })
 .then(() => {
