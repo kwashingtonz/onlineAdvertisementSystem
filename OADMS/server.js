@@ -24,7 +24,7 @@ app.use(express.urlencoded({extended: true}));
 //routers
 
 const router = require('./routes/categoryRouter.js');
-app.use('/home', router)
+app.use('/index', router)
 
 
 //server
