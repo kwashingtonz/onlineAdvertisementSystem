@@ -13,7 +13,7 @@ const getAllCategories = async (req,res) => {
         attributes: [
             'catId',
             'catName'
-        ]
+        ] 
     })
     res.status(200).send(categories)
 

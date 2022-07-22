@@ -33,6 +33,7 @@ db.Sequelize = Sequelize
 db.sequelize = sequelize
 
 db.categories = require('./categoryModel.js')(sequelize, DataTypes)
+db.items = require('./itemModel.js')(sequelize, DataTypes)
 
 db.sequelize.sync({ force: false })
 .then(() => {

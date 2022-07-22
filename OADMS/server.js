@@ -21,13 +21,7 @@ app.use(express.urlencoded({extended: true}));
 
 const router = require('./routes/categoryRouter.js');
 
-app.use('/api/categories', router)
-
-//testing api
-
-app.get('/',(req, res) => {
-    res.json({message: 'Hello from api'})
-});
+app.use('/', router)
 
 //port
 
