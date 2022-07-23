@@ -21,11 +21,22 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 
+
 //routers
 
-const router = require('./routes/categoryRouter.js');
-app.use('/index', router)
+const indexRouter = require('./routes/indexRouter.js');
 
+app.use('/', indexRouter)
+
+app.get('/items',(req,res) => {
+    let searchI = req.query.search
+    res.send(searchI)
+})
+
+app.post('/search',(req,res) =>{
+    let searchName = req.body.searchName
+    res.redirect('/items?search='+searchName);
+});
 
 //server
 

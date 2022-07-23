@@ -45,4 +45,15 @@ db.sequelize.sync({ force: false })
     console.log('yes re-sync done!')
 })
 
+//associations
+db.categories.hasMany(db.items,{
+    foreignKey: 'catId',
+    as: 'item'
+})
+
+db.items.belongsTo(db.categories,{
+    foreignKey: 'catId',
+    as:'category'
+})
+
 module.exports = db
