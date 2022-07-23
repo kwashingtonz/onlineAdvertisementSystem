@@ -34,7 +34,8 @@ const getAllCategoriesWithCount = async (req,res) => {
             as: 'item',
             attributes:[]
         }],
-        group: ['category.catId']
+        group: ['category.catId'],
+        order: sequelize.literal('itemCount DESC') 
     })
 
     res.status(200).send(data)
