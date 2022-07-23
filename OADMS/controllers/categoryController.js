@@ -13,12 +13,6 @@ const Item = db.items
 /* const getAllCategoriesWithCount = async (req,res) => {
 
     let categories = await sequelize.query("SELECT `category`.`catId`, MAX(`category`.`catName`) AS `catName`, COUNT(`item`.`itemId`) AS `itemCount` FROM `categories` AS `category` LEFT OUTER JOIN `items` AS `item` ON `category`.`catId` = `item`.`catId` GROUP BY `category`.`catId`", {type: QueryTypes.SELECT})
-    //  let categories = await Category.findAll({
-    //     attributes: [
-    //         'catId',
-    //         'catName'
-    //     ] 
-    // }) 
     res.status(200).send(categories)
 
 }  */
