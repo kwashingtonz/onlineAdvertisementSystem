@@ -75,6 +75,7 @@ const handleSellerLogin = async (req,res) => {
         //evaluate password
         const match = await bcrypt.compare(sellerPassword, foundSeller.sellerPassword);
         if(match){
+            //handle jwt
             res.json({'message': `Seller with ${sellerEmail} is logged in `})
         }else{
             res.redirect('/login?sucess='+ encodeURIComponent('no'))
