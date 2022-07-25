@@ -1,11 +1,11 @@
 //imports
-const categoryController = require('../controllers/categoryController');
+const categoryController = require('../controllers/categoryController')
 
-const router = require('express').Router();
+const router = require('express').Router()
 
 //get Categories with item count
-router.get('/', categoryController.getAllCategoriesWithCount);
+router.route('/')
+    .get(categoryController.getAllCategoriesWithCount)
 
 
-
-module.exports = router;
+module.exports = router

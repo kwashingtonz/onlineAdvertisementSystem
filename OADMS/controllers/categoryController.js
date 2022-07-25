@@ -1,6 +1,6 @@
 //imports
 const db = require('../models')
-const { QueryTypes } = require('sequelize')
+//const { QueryTypes } = require('sequelize')
 const { sequelize, Sequelize } = require('../models')
 
 //create main Model
@@ -18,7 +18,7 @@ const Item = db.items
 
 //main work 
 
-//get all categories and count of items
+//get all categories with count of items
 const getAllCategoriesWithCount = async (req,res) => {
 
     const data =  await Category.findAll({

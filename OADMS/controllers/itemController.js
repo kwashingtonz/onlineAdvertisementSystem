@@ -33,10 +33,20 @@ const getAllItems = async (req,res) => {
 }
 
 
-//get Searched Items
+
+//post searched Items
+const postSearchItems = (req,res) =>{
+    let searchName = req.body.searchName
+    res.redirect('/items/search?name='+searchName)
+}
+
+
+//get searched Items
 const getSearchItems = async (req,res) => {
     
     let searchI = req.query.name
+
+    if(!searchI) return res.status(400).json({ 'message' : 'Specify a search name'});
 
     const data =  await Item.findAll({
 
@@ -91,6 +101,7 @@ const getAllItemsByCategory = async (req,res) => {
 
 module.exports = {
     getAllItems,
+    postSearchItems,
     getSearchItems,
     getAllItemsByCategory
 }
