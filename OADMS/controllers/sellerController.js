@@ -49,8 +49,7 @@ const addNewSeller = async (req,res) => {
                 sellerCity: sellerCity,
                 sellerContact: sellerContact    
             },{fields : ['sellerName','sellerEmail','sellerPassword','sellerCity','sellerContact'] })
-            res.status(201).json({'success': 'New Seller Added' })
-            //res.redirect('/login')
+            res.redirect('/login?success='+ encodeURIComponent('yes'))
         } catch (err){
             res.status(500).json({'message': err.message })
         }
