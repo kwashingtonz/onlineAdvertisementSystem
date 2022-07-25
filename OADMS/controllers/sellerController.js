@@ -2,6 +2,9 @@
 const db = require('../models')
 const { sequelize, Sequelize } = require('../models')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+require('dotenv').config();
+
 
 //create main Model
 const Seller = db.sellers
@@ -76,6 +79,20 @@ const handleSellerLogin = async (req,res) => {
         const match = await bcrypt.compare(sellerPassword, foundSeller.sellerPassword);
         if(match){
             //handle jwt
+            const accessToken = jwt.sign(
+                {'email' : foundSeller.sellerEmail},
+                process.env.ACCESS_TOKEN_SECRET,
+                { expiresIn : '30s' }
+            )
+            const refreshToken = jwt.sign(
+                {'email' : foundSeller.sellerEmail},
+                process.env.REFRESH_TOKEN_SECRET,
+                { expiresIn : '1d' }
+            )
+
+            res.cookie('jwt', refreshToken , {httponly: true, maxAge: 24 * 60 * 60 * 1000 })
+            res.json({ accessToken })    
+
             res.json({'message': `Seller with ${sellerEmail} is logged in `})
         }else{
             res.redirect('/login?sucess='+ encodeURIComponent('no'))
