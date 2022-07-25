@@ -47,9 +47,9 @@ const postSearchItems = (req,res) =>{
 const getSearchItems = async (req,res) => {
     
     let searchI = req.query.name
-
+    
     if(!searchI) return res.status(400).json({ 'message' : 'Specify a search name'});
-
+    
     const item =  await Item.findAll({
 
         attributes: {
@@ -80,6 +80,8 @@ const getSearchItems = async (req,res) => {
 const getAllItemsByCategory = async (req,res) => {
 
     let cat = req.query.catId
+
+    if(!cat) return res.status(400).json({ 'message' : 'Specify a category type'});
 
     const item =  await Item.findAll({
         attributes: {
