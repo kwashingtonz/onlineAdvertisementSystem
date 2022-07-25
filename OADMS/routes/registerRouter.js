@@ -5,8 +5,7 @@ const sellerController = require('../controllers/sellerController')
 //get all Items
 router.route('/')
     //get cities to register page
-    //.get(cityController.getAllCities)
-    .get(sellerController.getAllSellers)
+    .get(cityController.getAllCities)
     .post(sellerController.addNewSeller)
 
     module.exports = router
