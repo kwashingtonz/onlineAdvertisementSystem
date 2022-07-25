@@ -12,7 +12,7 @@ const Seller = db.sellers
 
 //main work
 
-//get All Sellers
+/* //get All Sellers
 const getAllSellers = async (req,res) => {
 
     const seller =  await Seller.findAll()
@@ -20,7 +20,7 @@ const getAllSellers = async (req,res) => {
     res.status(200).send({
         sellers : seller
     })
-}
+} */
 
 //register new seller
 const addNewSeller = async (req,res) => {
@@ -78,7 +78,7 @@ const handleSellerLogin = async (req,res) => {
         //evaluate password
         const match = await bcrypt.compare(sellerPassword, foundSeller.sellerPassword);
         if(match){
-            //handle jwt
+             //handle jwt
             const accessToken = jwt.sign(
                 {'email' : foundSeller.sellerEmail},
                 process.env.ACCESS_TOKEN_SECRET,
@@ -89,12 +89,21 @@ const handleSellerLogin = async (req,res) => {
                 process.env.REFRESH_TOKEN_SECRET,
                 { expiresIn : '1d' }
             )
+            
+            //Saving refresh token with current user
+            const addRefreshToken = await Seller.update({
+                refreshToken: refreshToken   
+            },{
+                where : {
+                    sellerEmail : foundSeller.sellerEmail
+                }
+             })
 
-            res.cookie('jwt', refreshToken , {httponly: true, maxAge: 24 * 60 * 60 * 1000 })
+            res.cookie('jwt', refreshToken , {httponly: true, sameSite: 'None', secure: true, maxAge: 24 * 60 * 60 * 1000 })
             res.json({ accessToken })    
 
-            res.json({'message': `Seller with ${sellerEmail} is logged in `})
-        }else{
+            //res.json({'message': `Seller with ${sellerEmail} is logged in `})
+        }else{ 
             res.redirect('/login?sucess='+ encodeURIComponent('no'))
         }
     }
@@ -104,7 +113,7 @@ const handleSellerLogin = async (req,res) => {
 
 
 module.exports = {
-    getAllSellers,
+    //getAllSellers,
     addNewSeller,
     handleSellerLogin
 }

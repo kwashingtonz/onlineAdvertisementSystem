@@ -23,7 +23,11 @@ module.exports = (sequelize, DataTypes) =>{
         sellerContact: {
             type: DataTypes.STRING,
             allowNull: false
-        }   
+        },
+        refreshToken :{
+            type: DataTypes.STRING,
+            allowNull: true
+        } 
     },
     { 
         timestamps: false 
