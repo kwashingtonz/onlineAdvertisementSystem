@@ -10,14 +10,7 @@ const City = db.cities
 
 //get All Cities
 const getAllCities = async (req,res) => {
-    const city =  await City.findAll({
-        attributes: {
-            exclude:[
-                'createdAt',
-                'updatedAt'
-            ]
-        }
-    })
+    const city =  await City.findAll()
     res.status(200).send({
         cities: city
     })

@@ -2,6 +2,7 @@
 const db = require('../models')
 const { sequelize, Sequelize } = require('../models')
 
+
 //create main Model
 const Category = db.categories
 const Item = db.items
@@ -13,12 +14,6 @@ const Item = db.items
 const getAllItems = async (req,res) => {
 
     const item =  await Item.findAll({
-        attributes: {
-            exclude:[
-                'createdAt',
-                'updatedAt'
-            ]
-        } ,
         include:[{
             model: Category,
             as: 'category',
@@ -34,14 +29,11 @@ const getAllItems = async (req,res) => {
 
 }
 
-
-
 //post searched Items
 const postSearchItems = (req,res) =>{
     let searchName = req.body.searchName
     res.redirect('/items/search?name='+searchName)
 }
-
 
 //get searched Items
 const getSearchItems = async (req,res) => {
@@ -52,12 +44,6 @@ const getSearchItems = async (req,res) => {
     
     const item =  await Item.findAll({
 
-        attributes: {
-            exclude:[
-                'createdAt',
-                'updatedAt'
-            ]
-        } ,
         include:[{
             model: Category,
             as: 'category',
@@ -75,7 +61,6 @@ const getSearchItems = async (req,res) => {
 
 }
 
-
 //get items by category
 const getAllItemsByCategory = async (req,res) => {
 
@@ -84,12 +69,6 @@ const getAllItemsByCategory = async (req,res) => {
     if(!cat) return res.status(400).json({ 'message' : 'Specify a category type'});
 
     const item =  await Item.findAll({
-        attributes: {
-            exclude:[
-                'createdAt',
-                'updatedAt'
-            ]
-        } ,
         include:[{
             model: Category,
             as: 'category',

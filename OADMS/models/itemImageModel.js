@@ -16,7 +16,10 @@ module.exports = (sequelize, DataTypes) =>{
         status: {
             type: DataTypes.INTEGER,
             allowNull: false
-        }       
+        }  
+    },
+    { 
+        timestamps: false 
     })
 
     return ItemImage

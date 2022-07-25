@@ -8,7 +8,10 @@ module.exports = (sequelize, DataTypes) =>{
         itemCondition: {
             type: DataTypes.STRING,
             allowNull: false
-        }  
+        }
+    },
+    { 
+        timestamps: false 
     })
 
     return ItemCondition

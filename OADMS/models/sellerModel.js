@@ -2,8 +2,7 @@ module.exports = (sequelize, DataTypes) =>{
     const Seller = sequelize.define("seller",{
        sellerId: {
             type: DataTypes.INTEGER,
-            primaryKey:true,
-            allowNull: false
+            primaryKey:true
         },
         sellerName: {
             type: DataTypes.STRING,
@@ -24,7 +23,10 @@ module.exports = (sequelize, DataTypes) =>{
         sellerContact: {
             type: DataTypes.STRING,
             allowNull: false
-        }       
+        }   
+    },
+    { 
+        timestamps: false 
     })
 
     return Seller

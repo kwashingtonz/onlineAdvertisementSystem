@@ -8,7 +8,10 @@ module.exports = (sequelize, DataTypes) =>{
         catName: {
             type: DataTypes.STRING,
             allowNull: false
-        }  
+        }
+    },
+    { 
+        timestamps: false 
     })
 
     return Category
