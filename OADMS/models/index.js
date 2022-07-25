@@ -67,5 +67,15 @@ db.items.belongsTo(db.categories,{
     as:'category'
 })
 
+db.cities.hasMany(db.sellers,{
+    foreignKey: 'cityId',
+    as: 'seller'
+})
+
+db.sellers.belongsTo(db.cities,{
+    foreignKey: 'cityId',
+    as:'city'
+})
+
 
 module.exports = db
