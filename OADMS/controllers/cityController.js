@@ -2,7 +2,6 @@
 const db = require('../models')
 const { sequelize, Sequelize } = require('../models')
 
-
 //create main Model
 const City = db.cities
 
@@ -11,8 +10,7 @@ const City = db.cities
 
 //get All Cities
 const getAllCities = async (req,res) => {
-
-    const data =  await City.findAll({
+    const city =  await City.findAll({
         attributes: {
             exclude:[
                 'createdAt',
@@ -20,7 +18,9 @@ const getAllCities = async (req,res) => {
             ]
         }
     })
-    res.status(200).send(data)
+    res.status(200).json({
+        cities: city,
+    })
 
 }
 

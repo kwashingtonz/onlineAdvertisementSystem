@@ -68,12 +68,12 @@ db.items.belongsTo(db.categories,{
 })
 
 db.cities.hasMany(db.sellers,{
-    foreignKey: 'cityId',
+    foreignKey: 'sellerCity',
     as: 'seller'
 })
 
 db.sellers.belongsTo(db.cities,{
-    foreignKey: 'cityId',
+    foreignKey: 'sellerCity',
     as:'city'
 })
 

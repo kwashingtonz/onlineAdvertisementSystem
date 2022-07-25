@@ -12,7 +12,7 @@ const Item = db.items
 //get All Items
 const getAllItems = async (req,res) => {
 
-    const data =  await Item.findAll({
+    const item =  await Item.findAll({
         attributes: {
             exclude:[
                 'createdAt',
@@ -28,7 +28,9 @@ const getAllItems = async (req,res) => {
             status : 1
         }
     })
-    res.status(200).send(data)
+    res.status(200).json({
+        items : item
+    })
 
 }
 
@@ -48,7 +50,7 @@ const getSearchItems = async (req,res) => {
 
     if(!searchI) return res.status(400).json({ 'message' : 'Specify a search name'});
 
-    const data =  await Item.findAll({
+    const item =  await Item.findAll({
 
         attributes: {
             exclude:[
@@ -67,7 +69,9 @@ const getSearchItems = async (req,res) => {
         }
     })
 
-    res.status(200).send(data)
+    res.status(200).json({
+        items : item
+    })
 
 }
 
@@ -77,7 +81,7 @@ const getAllItemsByCategory = async (req,res) => {
 
     let cat = req.query.catId
 
-    const data =  await Item.findAll({
+    const item =  await Item.findAll({
         attributes: {
             exclude:[
                 'createdAt',
@@ -94,7 +98,10 @@ const getAllItemsByCategory = async (req,res) => {
             catId : cat
         }
     })
-    res.status(200).send(data)
+    
+    res.status(200).json({
+        items : item
+    })
 
 }
 

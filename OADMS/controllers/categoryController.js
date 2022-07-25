@@ -21,7 +21,7 @@ const Item = db.items
 //get all categories with count of items
 const getAllCategoriesWithCount = async (req,res) => {
 
-    const data =  await Category.findAll({
+    const category =  await Category.findAll({
         attributes: {
             include: [
                 [sequelize.fn('COUNT',sequelize.col('item.itemId')),'itemCount']
@@ -40,7 +40,9 @@ const getAllCategoriesWithCount = async (req,res) => {
         order: sequelize.literal('itemCount DESC') 
     })
 
-    res.status(200).send(data)
+    res.status(200).json({
+        categories: category
+    })
 
 }
 
