@@ -26,6 +26,7 @@ app.use(express.urlencoded({extended: true}))
 const indexRouter = require('./routes/indexRouter.js')
 const itemRouter =  require('./routes/itemRouter.js')
 const regRouter = require('./routes/registerRouter.js')
+const loginRouter = require('./routes/loginRouter.js')
 
 //index Page Loading with Categories
 app.use('/', indexRouter)
@@ -36,15 +37,8 @@ app.use('/items', itemRouter)
 //seller registration
 app.use('/register', regRouter)
 
-//Seller Login -jwt,session lookup
-//get seller login
-app.get('/login',(req,res) =>{
-    res.send('This is Login Page')
-});
-//post seller login page
-app.post('/login',(req,res) =>{
-    res.send('This is Login Page')
-});
+//seller login
+app.use('/login', loginRouter)
 
 
 //server

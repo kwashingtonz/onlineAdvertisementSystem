@@ -57,8 +57,36 @@ const addNewSeller = async (req,res) => {
 
 }
 
+//Seller Login
+const handleSellerLogin = async (req,res) => {
+    const {sellerEmail, sellerPassword} = req.body
+
+    if(!sellerEmail || !sellerPassword) return res.status(400).json({'message': 'Email and Password are required'})
+
+    const foundSeller = await Seller.findOne({
+        where: {
+            sellerEmail : sellerEmail
+        }
+    })
+
+    if(!foundSeller) 
+        return res.redirect('/login?avail='+ encodeURIComponent('no'))
+    else{
+        //evaluate password
+        const match = await bcrypt.compare(sellerPassword, foundSeller.sellerPassword);
+        if(match){
+            res.json({'message': `Seller with ${sellerEmail} is logged in `})
+        }else{
+            res.redirect('/login?sucess='+ encodeURIComponent('no'))
+        }
+    }
+    
+
+}
+
 
 module.exports = {
     getAllSellers,
-    addNewSeller
+    addNewSeller,
+    handleSellerLogin
 }
