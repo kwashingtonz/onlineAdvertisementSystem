@@ -1,21 +1,62 @@
 //imports
+const db = require('../models')
+const { sequelize, Sequelize } = require('../models')
 const jwt = require('jsonwebtoken')
-require('dotenv').config();
+require('dotenv').config()
 
+
+//Getting main model
+const Seller = db.sellers
+
+
+//main work
+
+ //check json web token exists & is verified
 const verifyJWT = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    if (!authHeader) return res.sendStatus(401)
-    console.log(authHeader); //Bearer Token
-    const token = authHeader.split(' ')[1]
-    jwt.verify(
-        token,
-        process.env.ACCESS_TOKEN_SECRET,
-        (err, decoded) => {
-            if(err) return res.sendStatus(403) //Invalid Token
-            req.user = decoded.email
-            next();
-        }
-    )
+    const token = req.cookies.jwt  
+   
+    if(token){
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decodedToken) => {
+            if(err){
+                console.log(err.message)
+                res.redirect('/login')
+            }else{
+                console.log(decodedToken)
+                next()
+            }
+        })
+    }else{
+        res.redirect('/login')
+    }
+    
 }
 
-module.exports = verifyJWT
+//check current user
+const checkUser = (req,res,next) => {
+    const token = req.cookies.jwt
+
+    if(token){
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decodedToken) => {
+            if(err){
+                console.log(err.message)
+                res.locals.seller = null
+                next()
+            }else{
+                console.log(decodedToken)
+                let user = await Seller.findAll({
+                    where: {
+                        sellerEmail : decodedToken.email
+                    }
+                })
+                res.locals.seller = user
+                next()
+            }
+        })
+    }else{
+        res.locals.seller = null
+        next()
+    }
+}
+
+
+module.exports = { verifyJWT,checkUser }

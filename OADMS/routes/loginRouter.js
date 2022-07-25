@@ -1,5 +1,7 @@
+//imports
 const router = require('express').Router()
 const sellerController = require('../controllers/sellerController')
+
 
 //get login page and authorization
 router.route('/')
@@ -8,4 +10,5 @@ router.route('/')
     })
     .post(sellerController.handleSellerLogin)
 
-    module.exports = router
+
+module.exports = router

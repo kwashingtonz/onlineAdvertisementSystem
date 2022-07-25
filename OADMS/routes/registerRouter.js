@@ -1,6 +1,8 @@
+//imports
 const router = require('express').Router()
 const cityController = require('../controllers/cityController')
 const sellerController = require('../controllers/sellerController')
+
 
 //get register page and registration
 router.route('/')
@@ -8,4 +10,5 @@ router.route('/')
     .get(cityController.getAllCities)
     .post(sellerController.addNewSeller)
 
-    module.exports = router
+    
+module.exports = router

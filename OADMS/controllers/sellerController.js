@@ -10,17 +10,10 @@ require('dotenv').config();
 const Seller = db.sellers
 
 
+//Time for cookie to be saved
+const maxAge = 3 * 24 * 60 * 60
+
 //main work
-
-/* //get All Sellers
-const getAllSellers = async (req,res) => {
-
-    const seller =  await Seller.findAll()
-
-    res.status(200).send({
-        sellers : seller
-    })
-} */
 
 //register new seller
 const addNewSeller = async (req,res) => {
@@ -78,40 +71,23 @@ const handleSellerLogin = async (req,res) => {
         //evaluate password
         const match = await bcrypt.compare(sellerPassword, foundSeller.sellerPassword);
         if(match){
-             //handle jwt
-            const accessToken = jwt.sign(
-                {'email' : foundSeller.sellerEmail},
-                process.env.ACCESS_TOKEN_SECRET,
-                { expiresIn : '30s' }
-            )
-            const refreshToken = jwt.sign(
-                {'email' : foundSeller.sellerEmail},
-                process.env.REFRESH_TOKEN_SECRET,
-                { expiresIn : '1d' }
-            )
             
-            //Saving refresh token with current user
-            const addRefreshToken = await Seller.update({
-                refreshToken: refreshToken   
-            },{
-                where : {
-                    sellerEmail : foundSeller.sellerEmail
-                }
-             })
-
-            res.cookie('jwt', refreshToken , {httponly: true, sameSite: 'None', secure: true, maxAge: 24 * 60 * 60 * 1000 })
-            res.json({ accessToken })    
-
-            //res.json({'message': `Seller with ${sellerEmail} is logged in `})
+            const token = accessToken(foundSeller.sellerEmail)
+            res.cookie('jwt', token, {httpOnly: true, maxAge: maxAge*1000})
+            res.redirect('/account')
         }else{ 
             res.redirect('/login?sucess='+ encodeURIComponent('no'))
         }
-    }
-    
-
+    }   
 }
 
 
+//Generate access token
+const accessToken = (email) => {
+    return jwt.sign({email},process.env.ACCESS_TOKEN_SECRET,{ expiresIn : maxAge })
+}
+    
+    
 module.exports = {
     //getAllSellers,
     addNewSeller,

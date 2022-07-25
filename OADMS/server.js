@@ -1,26 +1,22 @@
 //imports
 const express = require('express')
-
 const cors = require('cors')
-
 const app = express()
-
-const corOption = require('./config/corOptions')
-
-const verifyJWT = require('./middleware/verifyJWT')
-
 const cookieParser = require('cookie-parser')
-
-const credentials = require('./middleware/credentials')
+const { checkUser } = require('./middleware/verifyJWT')
 
 
 //port
 const PORT = process.env.PORT || 3000 
 
 
-//middleware
+//setting up cors options
+var corOption = {
+    origin: `https://localhost:${PORT}`
+}
 
-app.use(credentials)
+
+//middleware
 
 //cross origin resource sharing
 app.use(cors(corOption))
@@ -40,8 +36,11 @@ const indexRouter = require('./routes/indexRouter.js')
 const itemRouter =  require('./routes/itemRouter.js')
 const regRouter = require('./routes/registerRouter.js')
 const loginRouter = require('./routes/loginRouter.js')
-const refreshTokenRouter = require('./routes/refreshTokenRouter.js')
 const logoutRouter = require('./routes/logoutRouter.js')
+
+
+//sending seller data as response to every route
+app.get('*', checkUser)
 
 //index Page Loading with Categories
 app.use('/', indexRouter)
@@ -55,14 +54,8 @@ app.use('/login', loginRouter)
 //getting items list
 app.use('/items', itemRouter)
 
-/* 
-//refresh access token
-app.use('/refresh', refreshTokenRouter)
 //logout
 app.use('/logout',logoutRouter)
-//verify access token
-app.use(verifyJWT) */
-//put routers after above line to veryify the jwt
 
 
 //server
