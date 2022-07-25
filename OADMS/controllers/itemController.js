@@ -28,7 +28,7 @@ const getAllItems = async (req,res) => {
             status : 1
         }
     })
-    res.status(200).json({
+    res.status(200).send({
         items : item
     })
 
@@ -69,7 +69,7 @@ const getSearchItems = async (req,res) => {
         }
     })
 
-    res.status(200).json({
+    res.status(200).send({
         items : item
     })
 
@@ -99,7 +99,7 @@ const getAllItemsByCategory = async (req,res) => {
         }
     })
     
-    res.status(200).json({
+    res.status(200).send({
         items : item
     })
 

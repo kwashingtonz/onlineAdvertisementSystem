@@ -18,8 +18,8 @@ const getAllCities = async (req,res) => {
             ]
         }
     })
-    res.status(200).json({
-        cities: city,
+    res.status(200).send({
+        cities: city
     })
 
 }

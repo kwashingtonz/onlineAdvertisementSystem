@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt')
 //create main Model
 const Seller = db.sellers
 
+
 //main work
 
 //get All Sellers
@@ -19,8 +20,9 @@ const getAllSellers = async (req,res) => {
             ]
         }
     })
-    res.status(200).json({
-        sellers : seller   
+
+    res.status(200).send({
+        sellers : seller
     })
 }
 

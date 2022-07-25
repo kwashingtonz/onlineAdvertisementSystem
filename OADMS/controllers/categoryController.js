@@ -40,7 +40,7 @@ const getAllCategoriesWithCount = async (req,res) => {
         order: sequelize.literal('itemCount DESC') 
     })
 
-    res.status(200).json({
+    res.status(200).send({
         categories: category
     })
 
