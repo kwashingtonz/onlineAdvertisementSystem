@@ -1,14 +1,12 @@
-const db = require('../models');
-const { QueryTypes } = require('sequelize');
-const { sequelize, Sequelize } = require('../models');
+//imports
+const db = require('../models')
+const { QueryTypes } = require('sequelize')
+const { sequelize, Sequelize } = require('../models')
 
 //create main Model
 const Category = db.categories
 const Item = db.items
 
-//main work 
-
-//get all categories and count of items
 
 /* const getAllCategoriesWithCount = async (req,res) => {
 
@@ -17,6 +15,10 @@ const Item = db.items
 
 }  */
 
+
+//main work 
+
+//get all categories and count of items
 const getAllCategoriesWithCount = async (req,res) => {
 
     const data =  await Category.findAll({
@@ -41,6 +43,7 @@ const getAllCategoriesWithCount = async (req,res) => {
     res.status(200).send(data)
 
 }
+
 
 module.exports = {
     getAllCategoriesWithCount

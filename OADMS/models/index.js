@@ -1,7 +1,10 @@
+//imports
 const dbConfig = require('../config/dbConfig');
 
 const {Sequelize, DataTypes} = require('sequelize');
 
+
+//assigning DB configuration to Sequelize
 const sequelize = new Sequelize(
     dbConfig.DB,
     dbConfig.USER,
@@ -19,6 +22,8 @@ const sequelize = new Sequelize(
     }
 )
 
+
+//Authentication to the DB through Sequelize
 sequelize.authenticate()
 .then(() => {
     console.log('connected..')
@@ -27,11 +32,14 @@ sequelize.authenticate()
     console.log(`Error ${err}`)
 })
 
+
 const db = {}
 
 db.Sequelize = Sequelize
 db.sequelize = sequelize
 
+
+//Assigning the relevant models to the DB tables
 db.categories = require('./categoryModel.js')(sequelize, DataTypes)
 db.cities = require('./cityModel.js')(sequelize, DataTypes)
 db.itemconditions = require('./itemConditionModel.js')(sequelize, DataTypes)
@@ -40,12 +48,15 @@ db.items = require('./itemModel.js')(sequelize, DataTypes)
 db.itemimages = require('./itemImageModel.js')(sequelize, DataTypes)
 db.sellerimages = require('./sellerImageModel.js')(sequelize, DataTypes)
 
+
+//Syncronize DB Tables
 db.sequelize.sync({ force: false })
 .then(() => {
     console.log('yes re-sync done!')
 })
 
-//associations
+
+//Associations or Relationships (foreignkey)
 db.categories.hasMany(db.items,{
     foreignKey: 'catId',
     as: 'item'
@@ -55,5 +66,6 @@ db.items.belongsTo(db.categories,{
     foreignKey: 'catId',
     as:'category'
 })
+
 
 module.exports = db
