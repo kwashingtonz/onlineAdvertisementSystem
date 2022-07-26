@@ -106,7 +106,7 @@ const getAllItemsBySeller = async (req,res) => {
         res.redirect('/login');
     }
 
-    if(!sellerEmail) return res.status(400).json({ 'message' : 'User not logged in'});
+    if(!sellerEmail) return res.status(400).json({ 'message' : 'User not logged in'})
 
     const foundSeller = await Seller.findOne({
         where: {
@@ -114,7 +114,7 @@ const getAllItemsBySeller = async (req,res) => {
         }
     })
 
-    if(!foundSeller) return res.sendStatus(403); //Forbidden
+    if(!foundSeller) return res.sendStatus(403) //Forbidden
 
     const item =  await Item.findAll({
         include:[{
@@ -150,9 +150,55 @@ const getAllItemsBySeller = async (req,res) => {
             items : item
         })    
     }else{
-        return res.status(400).json({ 'message' : 'No listings'});
+        return res.status(400).json({ 'message' : 'No listings'})
     }
 
+   
+}
+
+
+//get item by itemId
+const getItemDetails = async (req,res) => {
+    const itemId = req.query.itemId
+    
+    const token = req.cookies.jwt
+    let sellerEmail 
+    
+    if(token){
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decodedToken) => {
+            if(err){
+                return res.status(400).json({ 'message' : 'jwt error'})
+            }else{
+                sellerEmail = decodedToken.email
+            }
+        })
+    }else{
+        res.redirect('/login');
+    }
+
+    if(!sellerEmail) return res.status(400).json({ 'message' : 'User not logged in'})
+   
+    const foundSeller = await Seller.findOne({
+        where: {
+            sellerEmail : sellerEmail
+        }
+    })
+
+    if(!foundSeller) return res.sendStatus(403) //Forbidden
+
+    const item =  await Item.findOne({
+        where: {
+            itemId : itemId,
+            sellerId : foundSeller.sellerId,
+            status : 1
+        }
+    })
+    
+    if(!item) return res.sendStatus(403)
+    
+    res.status(200).send({
+        item : item
+        })    
    
 }
 
@@ -162,5 +208,6 @@ module.exports = {
     postSearchItems,
     getSearchItems,
     getAllItemsByCategory,
-    getAllItemsBySeller
+    getAllItemsBySeller,
+    getItemDetails
 }

@@ -19,7 +19,8 @@ router.route('/add')
 
 router.route('/edit')
     //edit listing
-    .get()
+    .get(itemController.getItemDetails)
+    
     //save edit listing
     .post()
 
