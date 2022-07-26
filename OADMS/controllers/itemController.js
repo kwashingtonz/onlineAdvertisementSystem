@@ -1,7 +1,8 @@
 //imports
 const db = require('../models')
 const { sequelize, Sequelize } = require('../models')
-
+const jwt = require('jsonwebtoken')
+require('dotenv').config()
 
 //create main Model
 const Category = db.categories
@@ -89,13 +90,25 @@ const getAllItemsByCategory = async (req,res) => {
 //get items by seller
 const getAllItemsBySeller = async (req,res) => {
 
-    let sellerId = req.query.sellerId
+    const token = req.cookies.jwt
+    let sellerEmail 
+    if(token){
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decodedToken) => {
+            if(err){
+                return res.status(400).json({ 'message' : 'jwt error'});
+            }else{
+                sellerEmail = decodedToken.email
+            }
+        })
+    }else{
+        res.redirect('/login');
+    }
 
-    if(!sellerId) return res.status(400).json({ 'message' : 'Specify a sellerId'});
+    if(!sellerEmail) return res.status(400).json({ 'message' : 'User not logged in'});
 
     const foundSeller = await Seller.findOne({
         where: {
-            sellerId : sellerId
+            sellerEmail : sellerEmail
         }
     })
 
@@ -109,7 +122,7 @@ const getAllItemsBySeller = async (req,res) => {
         }],
         where: {
             status : 1,
-            sellerId : sellerId
+            sellerId : foundSeller.sellerId
         }
     })
     
