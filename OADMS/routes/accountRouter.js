@@ -6,7 +6,7 @@ const router = require('express').Router()
 
 router.route('/')
     //get all Listings by the seller
-    .get()
+    .get(itemController.getAllItemsBySeller)
 
 router.route('/add')
     //add listing

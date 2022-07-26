@@ -75,7 +75,7 @@ const handleSellerLogin = async (req,res) => {
             
             const token = accessToken(foundSeller.sellerEmail)
             res.cookie('jwt', token, {httpOnly: true, maxAge: maxAge*1000})
-            res.redirect('/account')
+            res.redirect('/account?sellerId='+encodeURIComponent(foundSeller.sellerId))
         }else{ 
             //res.redirect('/login?sucess='+ encodeURIComponent('no'))
             res.status(400).json({'message': 'Email and Password do not match'})

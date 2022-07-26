@@ -3,7 +3,7 @@ const express = require('express')
 const cors = require('cors')
 const app = express()
 const cookieParser = require('cookie-parser')
-const { verifyJWT,checkUser } = require('./middleware/verifyJWT') //put verifyJWT in the params of get where do you want to authorize
+const { verifyJWT,currentUser } = require('./middleware/verifyJWT') //put verifyJWT in the params of get where do you want to authorize
 
 
 //port
@@ -41,19 +41,19 @@ const accountRouter = require('./routes/accountRouter.js')
 
 
 //sending seller data as response to every route
-app.get('*', checkUser)
+app.get('*', currentUser)
 
 //index Page Loading with Categories
 app.use('/', indexRouter)
+
+//getting items list
+app.use('/items', itemRouter)
 
 //seller registration
 app.use('/register', regRouter)
 
 //seller login
 app.use('/login', loginRouter)
-
-//getting items list
-app.use('/items', itemRouter)
 
 //seller account - seller listings, post ad, seller settings
 app.use('/account', verifyJWT ,accountRouter)

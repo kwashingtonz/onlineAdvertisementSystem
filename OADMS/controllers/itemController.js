@@ -6,7 +6,7 @@ const { sequelize, Sequelize } = require('../models')
 //create main Model
 const Category = db.categories
 const Item = db.items
-
+const Seller = db.sellers
 
 //main work 
 
@@ -86,10 +86,49 @@ const getAllItemsByCategory = async (req,res) => {
 
 }
 
+//get items by seller
+const getAllItemsBySeller = async (req,res) => {
+
+    let sellerId = req.query.sellerId
+
+    if(!sellerId) return res.status(400).json({ 'message' : 'Specify a sellerId'});
+
+    const foundSeller = await Seller.findOne({
+        where: {
+            sellerId : sellerId
+        }
+    })
+
+    if(!foundSeller) return res.sendStatus(403); //Forbidden
+
+    const item =  await Item.findAll({
+        include:[{
+            model: Category,
+            as: 'category',
+            attributes:[]
+        }],
+        where: {
+            status : 1,
+            sellerId : sellerId
+        }
+    })
+    
+    if(item.length>0){
+        res.status(200).send({
+            items : item
+        })    
+    }else{
+        return res.status(400).json({ 'message' : 'No listings'});
+    }
+
+   
+}
+
 
 module.exports = {
     getAllItems,
     postSearchItems,
     getSearchItems,
-    getAllItemsByCategory
+    getAllItemsByCategory,
+    getAllItemsBySeller
 }

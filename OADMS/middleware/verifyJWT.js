@@ -31,8 +31,8 @@ const verifyJWT = (req, res, next) => {
     
 }
 
-//check current user
-const checkUser = (req,res,next) => {
+//Current user
+const currentUser = (req,res,next) => {
     const token = req.cookies.jwt
 
     if(token){
@@ -62,4 +62,4 @@ const checkUser = (req,res,next) => {
 }
 
 
-module.exports = { verifyJWT,checkUser }
+module.exports = { verifyJWT,currentUser }
