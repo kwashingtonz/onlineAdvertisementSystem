@@ -3,7 +3,7 @@ const express = require('express')
 const cors = require('cors')
 const app = express()
 const cookieParser = require('cookie-parser')
-const { checkUser } = require('./middleware/verifyJWT')
+const { verifyJWT,checkUser } = require('./middleware/verifyJWT') //put verifyJWT in the params of get where do you want to authorize
 
 
 //port

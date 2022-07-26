@@ -1,8 +1,7 @@
 //imports
 const itemController = require('../controllers/itemController')
 const router = require('express').Router()
-const { verifyJWT } = require('../middleware/verifyJWT')
-//put verifyJWT in the params of get where do you want to authorize
+
 
 router.route('/')
     //get all Items

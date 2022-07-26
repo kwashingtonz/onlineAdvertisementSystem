@@ -39,21 +39,24 @@ const checkUser = (req,res,next) => {
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decodedToken) => {
             if(err){
                 console.log(err.message)
-                res.locals.seller = null
+                res.locals.user = null
                 next()
             }else{
                 console.log(decodedToken)
-                let user = await Seller.findAll({
+                let seller = await Seller.findAll({
+                    attributes:{
+                        exclude: 'sellerPassword'
+                    },
                     where: {
                         sellerEmail : decodedToken.email
                     }
                 })
-                res.locals.seller = user
+                res.locals.user = seller
                 next()
             }
         })
     }else{
-        res.locals.seller = null
+        res.locals.user = null
         next()
     }
 }
