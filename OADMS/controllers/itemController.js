@@ -203,11 +203,64 @@ const getItemDetails = async (req,res) => {
 }
 
 
+//get unpublish item by item id
+const unpublishItem = async (req,res) => {
+    const itemId = req.query.itemId
+    
+    const token = req.cookies.jwt
+    let sellerEmail 
+    
+    if(token){
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decodedToken) => {
+            if(err){
+                return res.status(400).json({ 'message' : 'jwt error'})
+            }else{
+                sellerEmail = decodedToken.email
+            }
+        })
+    }else{
+        res.redirect('/login');
+    }
+
+    if(!sellerEmail) return res.status(400).json({ 'message' : 'User not logged in'})
+   
+    const foundSeller = await Seller.findOne({
+        where: {
+            sellerEmail : sellerEmail
+        }
+    })
+
+    if(!foundSeller) return res.sendStatus(403) //Forbidden
+
+    const item =  await Item.findOne({
+        where: {
+            itemId : itemId,
+            sellerId : foundSeller.sellerId,
+            status : 1
+        }
+    })
+    
+    if(!item) return res.sendStatus(403)
+    
+    const remItem = await Item.update({
+        status :0
+    },{
+        where: {
+            itemId : itemId,
+            sellerId : foundSeller.sellerId
+        }
+    })
+
+    res.redirect('/account')     
+   
+}
+
 module.exports = {
     getAllItems,
     postSearchItems,
     getSearchItems,
     getAllItemsByCategory,
     getAllItemsBySeller,
-    getItemDetails
+    getItemDetails,
+    unpublishItem
 }

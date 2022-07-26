@@ -11,7 +11,7 @@ router.route('/')
 router.route('/add')
     //add listing
     .get(((req,res) =>{
-            res.send('This is add post page')
+            res.send('This is add item page')
         })
     )
     //save listing
@@ -20,17 +20,19 @@ router.route('/add')
 router.route('/edit')
     //edit listing
     .get(itemController.getItemDetails)
-    
+
     //save edit listing
     .post()
 
 router.route('/delete')
     //delete or unpublish listing
-    .get()   
+    .get(itemController.unpublishItem)   
 
 router.route('/settings')
     //get seller details
-    .get()
+    .get(((req,res) =>{
+        res.send('This is seller settings page')
+    }))
     //update change settings
     .post()
 
