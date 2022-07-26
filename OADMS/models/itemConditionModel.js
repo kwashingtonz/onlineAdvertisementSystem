@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) =>{
-    const ItemCondition = sequelize.define("itemCondition",{
+    const ItemCondition = sequelize.define("itemcondition",{
         itemConditionId: {
             type: DataTypes.INTEGER,
             primaryKey:true,

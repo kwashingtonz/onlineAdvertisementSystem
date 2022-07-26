@@ -8,6 +8,8 @@ require('dotenv').config()
 const Category = db.categories
 const Item = db.items
 const Seller = db.sellers
+const City = db.cities
+const ItemCondition = db.itemconditions
 
 //main work 
 
@@ -118,8 +120,25 @@ const getAllItemsBySeller = async (req,res) => {
         include:[{
             model: Category,
             as: 'category',
-            attributes:[]
-        }],
+            attributes:[
+                'catName'
+            ]
+        },{
+            model: City,
+            as: 'city',
+            attributes:[
+                'cityName'
+            ]
+        }/* ,{
+            model: ItemCondition,
+            as: 'itemcondition',
+            attributes:[
+                'itemCondition'
+            ]
+        } */],
+        attributes:{
+            exclude: ['catId','sellerId','itemCondition','itemCity','itemContact','itemDescription','status']
+        },
         where: {
             status : 1,
             sellerId : foundSeller.sellerId

@@ -57,6 +57,7 @@ db.sequelize.sync({ force: false })
 
 
 //Associations or Relationships (foreignkey)
+//Categories has many Items
 db.categories.hasMany(db.items,{
     foreignKey: 'catId',
     as: 'item'
@@ -67,6 +68,29 @@ db.items.belongsTo(db.categories,{
     as:'category'
 })
 
+//Cities has many Items
+db.cities.hasMany(db.items,{
+    foreignKey: 'itemCity',
+    as: 'item'
+})
+
+db.items.belongsTo(db.cities,{
+    foreignKey: 'itemCity',
+    as:'city'
+})
+
+//ItemConditions has many Items
+db.itemconditions.hasMany(db.items,{
+    foreignKey: 'itemCondition',
+    as: 'item' 
+})
+
+db.items.belongsTo(db.itemconditions,{
+    foreignKey: 'itemCondition',
+    as: 'itemcondition'
+})
+
+//Cities has many sellers
 db.cities.hasMany(db.sellers,{
     foreignKey: 'sellerCity',
     as: 'seller'
