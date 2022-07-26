@@ -66,7 +66,8 @@ const handleSellerLogin = async (req,res) => {
     })
 
     if(!foundSeller) 
-        return res.redirect('/login?avail='+ encodeURIComponent('no'))
+       // return res.redirect('/login?avail='+ encodeURIComponent('no'))
+       return res.status(400).json({'message': 'Not a registered user'})
     else{
         //evaluate password
         const match = await bcrypt.compare(sellerPassword, foundSeller.sellerPassword);
@@ -76,7 +77,8 @@ const handleSellerLogin = async (req,res) => {
             res.cookie('jwt', token, {httpOnly: true, maxAge: maxAge*1000})
             res.redirect('/account')
         }else{ 
-            res.redirect('/login?sucess='+ encodeURIComponent('no'))
+            //res.redirect('/login?sucess='+ encodeURIComponent('no'))
+            res.status(400).json({'message': 'Email and Password do not match'})
         }
     }   
 }

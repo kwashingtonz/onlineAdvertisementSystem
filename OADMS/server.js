@@ -37,6 +37,7 @@ const itemRouter =  require('./routes/itemRouter.js')
 const regRouter = require('./routes/registerRouter.js')
 const loginRouter = require('./routes/loginRouter.js')
 const logoutRouter = require('./routes/logoutRouter.js')
+const accountRouter = require('./routes/accountRouter.js')
 
 
 //sending seller data as response to every route
@@ -53,6 +54,9 @@ app.use('/login', loginRouter)
 
 //getting items list
 app.use('/items', itemRouter)
+
+//seller account - seller listings, post ad, seller settings
+app.use('/account', verifyJWT ,accountRouter)
 
 //logout
 app.use('/logout',logoutRouter)
