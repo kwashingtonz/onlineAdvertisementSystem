@@ -10,10 +10,7 @@ router.route('/')
 
 router.route('/add')
     //add listing get itemCondition , city, sellerPhone, sellerCity
-    .get(((req,res) =>{
-            res.send('This is add item page')
-        })
-    )
+    .get(itemController.getAddItemNecessities)
     //save listing
     .post()
 

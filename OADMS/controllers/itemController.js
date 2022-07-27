@@ -209,6 +209,45 @@ const getItemDetails = async (req,res) => {
    
 }
 
+//get add item page necessary data
+const getAddItemNecessities = async (req,res) => {
+    const token = req.cookies.jwt
+    let sellerEmail 
+    
+    if(token){
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decodedToken) => {
+            if(err){
+                return res.status(400).json({ 'message' : 'jwt error'})
+            }else{
+                sellerEmail = decodedToken.email
+            }
+        })
+    }else{
+        res.redirect('/login');
+    }
+
+    if(!sellerEmail) return res.status(400).json({ 'message' : 'User not logged in'})
+   
+    const foundSeller = await Seller.findOne({
+        where: {
+            sellerEmail : sellerEmail
+        }
+    })
+
+    if(!foundSeller) return res.sendStatus(403) //Forbidden
+
+    const category =  await Category.findAll()
+    const icondition =  await ItemCondition.findAll()
+    const city = await City.findAll()
+    
+    res.status(200).send({
+        categories : category,
+        itemConditions : icondition,
+        cities : city
+        })    
+   
+}
+
 
 //get unpublish item by item id
 const unpublishItem = async (req,res) => {
@@ -269,5 +308,6 @@ module.exports = {
     getAllItemsByCategory,
     getAllItemsBySeller,
     getItemDetails,
-    unpublishItem
+    unpublishItem,
+    getAddItemNecessities
 }
