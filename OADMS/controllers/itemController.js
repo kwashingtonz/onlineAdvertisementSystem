@@ -193,10 +193,17 @@ const getItemDetails = async (req,res) => {
             status : 1
         }
     })
-    
+
+    const category =  await Category.findAll()
+    const icondition =  await ItemCondition.findAll()
+    const city = await City.findAll()
+
     if(!item) return res.sendStatus(403)
     
     res.status(200).send({
+        categories : category,
+        itemConditions : icondition,
+        cities : city,
         item : item
         })    
    
