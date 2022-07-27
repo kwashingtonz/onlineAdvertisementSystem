@@ -8,6 +8,7 @@ require('dotenv').config();
 
 //create main Model
 const Seller = db.sellers
+const City = db.cities
 
 
 //Time for cookie to be saved
@@ -88,10 +89,65 @@ const handleSellerLogin = async (req,res) => {
 const accessToken = (email) => {
     return jwt.sign({email},process.env.ACCESS_TOKEN_SECRET,{ expiresIn : maxAge })
 }
+
+
+//get seller details by sellerEmail
+const getSellerDetails = async (req,res) => {
+    const itemId = req.query.itemId
     
+    const token = req.cookies.jwt
+    let sellerEmail 
+    
+    if(token){
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decodedToken) => {
+            if(err){
+                return res.status(400).json({ 'message' : 'jwt error'})
+            }else{
+                sellerEmail = decodedToken.email
+            }
+        })
+    }else{
+        res.redirect('/login');
+    }
+
+    if(!sellerEmail) return res.status(400).json({ 'message' : 'User not logged in'})
+   
+    const foundSeller = await Seller.findOne({
+        include:[{
+            model: City,
+            as: 'city',
+            attributes:[
+                'cityName'
+            ]
+        }],
+        attributes:{
+            exclude: ['sellerPassword']
+        },
+        where: {
+            sellerEmail : sellerEmail
+        }
+    })
+
+    if(!foundSeller) return res.sendStatus(403) //Forbidden
+
+    const city =  await City.findAll()
+    
+    res.status(200).send({
+        cities : city,
+        seller : foundSeller
+        })    
+   
+}
+   
+//update SellerDetails
+const updateSellerDetails = async (req,res) => {
+
+}
+
     
 module.exports = {
-    //getAllSellers,
     addNewSeller,
-    handleSellerLogin
+    handleSellerLogin,
+    getSellerDetails,
+    updateSellerDetails
 }

@@ -9,7 +9,7 @@ router.route('/')
     .get(itemController.getAllItemsBySeller)
 
 router.route('/add')
-    //add listing
+    //add listing get itemCondition , city, sellerPhone, sellerCity
     .get(((req,res) =>{
             res.send('This is add item page')
         })
@@ -20,7 +20,6 @@ router.route('/add')
 router.route('/edit')
     //edit listing
     .get(itemController.getItemDetails)
-
     //save edit listing
     .post()
 
@@ -30,11 +29,9 @@ router.route('/delete')
 
 router.route('/settings')
     //get seller details
-    .get(((req,res) =>{
-        res.send('This is seller settings page')
-    }))
+    .get(sellerController.getSellerDetails)
     //update change settings
-    .post()
+    .post(sellerController.updateSellerDetails)
 
 
 module.exports = router
