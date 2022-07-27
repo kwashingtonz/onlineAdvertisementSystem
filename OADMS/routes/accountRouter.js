@@ -9,13 +9,13 @@ router.route('/')
     .get(itemController.getAllItemsBySeller)
 
 router.route('/add')
-    //add listing get itemCondition , city, sellerPhone, sellerCity
+    //add listing -- get sellerContact, sellerCity
     .get(itemController.getAddItemNecessities)
     //save listing
     .post()
 
 router.route('/edit')
-    //edit listing
+    //edit listing --  get itemContact, itemCity
     .get(itemController.getItemDetails)
     //save edit listing
     .post()

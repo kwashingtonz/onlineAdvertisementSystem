@@ -200,11 +200,21 @@ const getItemDetails = async (req,res) => {
 
     if(!item) return res.sendStatus(403)
     
+    const foundCity = await City.findOne({
+        where: {
+            cityId: item.itemCity
+        }
+    })
+
     res.status(200).send({
         categories : category,
         itemConditions : icondition,
         cities : city,
-        item : item
+        item : item,
+        details : {
+            contact: item.itemContact,
+            city : foundCity.cityName
+        }
         })    
    
 }
@@ -236,6 +246,12 @@ const getAddItemNecessities = async (req,res) => {
 
     if(!foundSeller) return res.sendStatus(403) //Forbidden
 
+    const foundCity = await City.findOne({
+        where: {
+            cityId: foundSeller.sellerCity
+        }
+    })
+
     const category =  await Category.findAll()
     const icondition =  await ItemCondition.findAll()
     const city = await City.findAll()
@@ -243,7 +259,11 @@ const getAddItemNecessities = async (req,res) => {
     res.status(200).send({
         categories : category,
         itemConditions : icondition,
-        cities : city
+        cities : city,
+        details : {
+            contact: foundSeller.sellerContact,
+            city : foundCity.cityName
+        }
         })    
    
 }
