@@ -9,8 +9,5 @@ router.route('/')
     //Get filterd Items - category or city
     .post(itemController.postSearchItems)
     
-router.route('/search')
-    //get Searched Items
-    .get(itemController.getSearchItems)
 
 module.exports = router

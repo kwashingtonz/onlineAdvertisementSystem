@@ -23,7 +23,7 @@ const getAllItems = async (req,res) => {
     const cat =  await Category.findAll()
     const cty = await City.findAll()
 
-    if(!category){
+    if(!category && !name && !city){
         //get All Items
         const item =  await Item.findAll({
             include:[{
@@ -40,7 +40,7 @@ const getAllItems = async (req,res) => {
             cities: cty,
             items : item
         })
-    }else{
+    }else if(category && !name && !city){
         //get items by category
         const item =  await Item.findAll({
             include:[{
@@ -59,6 +59,131 @@ const getAllItems = async (req,res) => {
             cities: cty,
             items : item
         })
+    }else if(!category && name && !city){
+        //get items by name
+        const item =  await Item.findAll({
+
+            include:[{
+                model: Category,
+                as: 'category',
+                attributes:[]
+            }],
+            where: {
+                itemName : {[Sequelize.Op.like]: `%${name}%`},
+                status : 1
+            }
+        })
+
+        res.status(200).send({
+            categories : cat,
+            cities: cty,
+            items : item
+        })
+    }else if(!category && !name && city){
+        //get items by city
+        const item =  await Item.findAll({
+
+            include:[{
+                model: Category,
+                as: 'category',
+                attributes:[]
+            }],
+            where: {
+                itemCity : city, 
+                status : 1
+            }
+        })
+
+        res.status(200).send({
+            categories : cat,
+            cities: cty,
+            items : item
+        })
+    }else if(category && name && !city){
+        //get items by category and name
+        const item =  await Item.findAll({
+
+            include:[{
+                model: Category,
+                as: 'category',
+                attributes:[]
+            }],
+            where: {
+                catId : category,
+                itemName : {[Sequelize.Op.like]: `%${name}%`},
+                status : 1
+            }
+        })
+
+        res.status(200).send({
+            categories : cat,
+            cities: cty,
+            items : item
+        })
+    }else if(!category && name && city){
+        //get items by name and city
+        const item =  await Item.findAll({
+
+            include:[{
+                model: Category,
+                as: 'category',
+                attributes:[]
+            }],
+            where: {
+                itemCity : city,
+                itemName : {[Sequelize.Op.like]: `%${name}%`},
+                status : 1
+            }
+        })
+
+        res.status(200).send({
+            categories : cat,
+            cities: cty,
+            items : item
+        })
+    }else if(category && !name && city){
+        //get items by category and city
+        const item =  await Item.findAll({
+
+            include:[{
+                model: Category,
+                as: 'category',
+                attributes:[]
+            }],
+            where: {
+                catId: category,
+                itemCity : city,
+                status : 1
+            }
+        })
+
+        res.status(200).send({
+            categories : cat,
+            cities: cty,
+            items : item
+        })
+    }else{
+        //get items by category , name and city
+        const item =  await Item.findAll({
+
+            include:[{
+                model: Category,
+                as: 'category',
+                attributes:[]
+            }],
+            where: {
+                catId: category,
+                itemName : {[Sequelize.Op.like]: `%${name}%`},
+                itemCity : city,
+                status : 1
+            }
+        })
+
+        res.status(200).send({
+            categories : cat,
+            cities: cty,
+            items : item
+        })
     }
 }
 
@@ -68,32 +193,6 @@ const postSearchItems = (req,res) =>{
     let category = req.body.category
     let city = req.body.city
     res.redirect(`/items?name=${name}&category=${category}&city=${city}`)
-}
-
-//get searched Items
-const getSearchItems = async (req,res) => {
-    
-    let searchI = req.query.name
-    
-    if(!searchI) return res.status(400).json({ 'message' : 'Specify a search name'});
-    
-    const item =  await Item.findAll({
-
-        include:[{
-            model: Category,
-            as: 'category',
-            attributes:[]
-        }],
-        where: {
-            itemName : {[Sequelize.Op.like]: `%${searchI}%`},
-            status : 1
-        }
-    })
-
-    res.status(200).send({
-        items : item
-    })
-
 }
 
 
@@ -470,7 +569,6 @@ function formatDate(date) {
 module.exports = {
     getAllItems,
     postSearchItems,
-    getSearchItems,
     getAllItemsBySeller,
     getItemDetails,
     unpublishItem,
