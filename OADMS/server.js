@@ -33,7 +33,7 @@ app.use(cookieParser())
 
 //routers
 const indexRouter = require('./routes/indexRouter.js')
-const itemRouter =  require('./routes/itemRouter.js')
+const listRouter =  require('./routes/listRouter.js')
 const regRouter = require('./routes/registerRouter.js')
 const loginRouter = require('./routes/loginRouter.js')
 const logoutRouter = require('./routes/logoutRouter.js')
@@ -47,7 +47,7 @@ app.get('*', currentUser)
 app.use('/', indexRouter)
 
 //getting items list
-app.use('/items', itemRouter)
+app.use('/list', listRouter)
 
 //seller registration
 app.use('/register', regRouter)

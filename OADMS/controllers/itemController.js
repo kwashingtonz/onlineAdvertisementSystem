@@ -222,21 +222,21 @@ const postSearchItems = (req,res) =>{
     let city = req.body.city
 
     if(!name && !category && !city)
-        res.redirect(`/items`)
+        res.redirect(`/list`)
     else if(name && !category && !city)
-        res.redirect(`/items?name=${name}`)
+        res.redirect(`/list?name=${name}`)
     else if(!name &&  category && !city)
-        res.redirect(`/items?category=${category}`)
+        res.redirect(`/list?category=${category}`)
     else if(!name &&  !category && city)
-        res.redirect(`/items?city=${city}`)
+        res.redirect(`/list?city=${city}`)
     else if(name &&  category && !city)
-        res.redirect(`/items?name=${name}&category=${category}`)
+        res.redirect(`/list?name=${name}&category=${category}`)
     else if(name &&  !category && city)
-        res.redirect(`/items?name=${name}&city=${city}`)
+        res.redirect(`/list?name=${name}&city=${city}`)
     else if(!name &&  category && city)
-        res.redirect(`/items?category=${category}&city=${city}`)
+        res.redirect(`/list?category=${category}&city=${city}`)
     else
-        res.redirect(`/items?name=${name}&category=${category}&city=${city}`)
+        res.redirect(`/list?name=${name}&category=${category}&city=${city}`)
 }
 
 
