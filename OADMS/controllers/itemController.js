@@ -321,6 +321,80 @@ const unpublishItem = async (req,res) => {
    
 }
 
+//Add Item
+const addItem = async (req,res) => {
+
+    const {itemName,itemCategory,itemCondition,itemPrice,itemDescription,itemCity,itemContact} = req.body
+
+    if(!itemName || !itemCategory || !itemCondition || !itemPrice || !itemDescription || !itemCity || !itemContact)
+        return res.status(400).json({'message': 'All information are required'})
+
+        const token = req.cookies.jwt
+        let sellerEmail 
+        
+        if(token){
+            jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decodedToken) => {
+                if(err){
+                    return res.status(400).json({ 'message' : 'jwt error'})
+                }else{
+                    sellerEmail = decodedToken.email
+                }
+            })
+        }else{
+            res.redirect('/login');
+        }
+    
+        if(!sellerEmail) return res.status(400).json({ 'message' : 'User not logged in'})
+       
+        const foundSeller = await Seller.findOne({
+            where: {
+                sellerEmail : sellerEmail
+            }
+        })
+    
+        if(!foundSeller) return res.sendStatus(403) //Forbidden
+
+        const dt = formatDate(new Date()).toString()
+
+        const newItem = await Item.create({
+            catId: itemCategory,
+            sellerId: foundSeller.sellerId,
+            itemName: itemName,
+            itemCondition: itemCondition,
+            itemPrice: itemPrice,
+            itemDateAndTime: dt,
+            itemCity: itemCity,
+            itemContact: itemContact,
+            itemDescription: itemDescription,
+            status: 1
+        },{fields : ['catId','sellerId','itemName','itemCondition','itemPrice','itemDateAndTime','itemCity','itemContact','itemDescription','status'] })
+    
+        res.redirect('/account')
+}
+
+
+//DateTime formating
+function padTo2Digits(num) {
+    return num.toString().padStart(2, '0');
+}
+  
+function formatDate(date) {
+    return (
+      [
+        date.getFullYear(),
+        padTo2Digits(date.getMonth() + 1),
+        padTo2Digits(date.getDate()),
+      ].join('-') +
+      ' ' +
+      [
+        padTo2Digits(date.getHours()),
+        padTo2Digits(date.getMinutes()),
+        padTo2Digits(date.getSeconds()),
+      ].join(':')
+    );
+}
+
+
 module.exports = {
     getAllItems,
     postSearchItems,
@@ -329,5 +403,6 @@ module.exports = {
     getAllItemsBySeller,
     getItemDetails,
     unpublishItem,
-    getAddItemNecessities
+    getAddItemNecessities,
+    addItem
 }
