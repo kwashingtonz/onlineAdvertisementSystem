@@ -25,13 +25,11 @@ const addNewSeller = async (req,res) => {
     
     const sellerImage = req.file
     let sellerImg
-    if(!sellerImage){
-        sellerImg = ''
-    }else{
+
+    if(sellerImage){ 
         sellerImg =sellerImage.path
     }
 
-    
     //checking all data is available
     if(!sellerName || !sellerEmail || !sellerPassword || !sellerCity || !sellerContact)
         return res.status(400).json({'message': 'All information are required'})
@@ -60,17 +58,19 @@ const addNewSeller = async (req,res) => {
             },{fields : ['sellerName','sellerEmail','sellerPassword','sellerCity','sellerContact'] })
             
             //Image uploading
-            const getSellerId = await Seller.findOne({
-                where:{
-                    sellerEmail: sellerEmail
-                }
-            })
+            if(sellerImage){
+                const getSellerId = await Seller.findOne({
+                    where:{
+                        sellerEmail: sellerEmail
+                    }
+                })
 
-            const newImage = await SellerImage.create({
-                sellerId: getSellerId.sellerId,
-                imageName: sellerImg,
-                status: 1
-            })
+                const newImage = await SellerImage.create({
+                    sellerId: getSellerId.sellerId,
+                    imageName: sellerImg,
+                    status: 1
+                })
+            }
             
             res.redirect('/login?success='+ encodeURIComponent('yes'))
         } catch (err){
@@ -245,9 +245,8 @@ const updateSellerDetails = async (req,res) => {
 
     const sellerImage = req.file
     let sellerImg
-    if(!sellerImage){
-        sellerImg = ''
-    }else{
+
+    if(sellerImage){
         sellerImg =sellerImage.path
     }
 
@@ -294,41 +293,38 @@ const updateSellerDetails = async (req,res) => {
                         sellerId : foundSeller.sellerId
                     }
                 })
-                const foundImage = await SellerImage.findOne({
-                    where:{
-                        sellerId : foundSeller.sellerId,
-                        imageName: '',
-                        status: 1
-                    }
-                })
-
-                if(!foundImage){
-                    
-                    const updateImage = await SellerImage.update({  
-                        status: 0
-                    },{where: {
-                            sellerId: foundSeller.sellerId,
-                            status: 1
-                        }
-                    })
-                        
-                    const newImage = await SellerImage.create({
-                        sellerId: foundSeller.sellerId,
-                        imageName: sellerImg,
-                        status: 1
-                    })       
-                    
-                }else{
-                    const updateImage = await SellerImage.update({
-                        imageName:sellerImg
-                    },{
+                //updating sellerImage
+                if(sellerImage){
+                    const foundImage = await SellerImage.findOne({
                         where:{
-                            sellerId: foundSeller.sellerId,
+                            sellerId : foundSeller.sellerId,
                             status: 1
                         }
                     })
-                }
 
+                    if(!foundImage){
+                        const newImage = await SellerImage.create({
+                            sellerId: foundSeller.sellerId,
+                            imageName: sellerImg,
+                            status: 1
+                        })
+                    }else{
+                        const updateImage = await SellerImage.update({  
+                            status: 0
+                        },{where: {
+                                sellerId: foundSeller.sellerId,
+                                status: 1
+                            }
+                        })
+
+                        const newImage = await SellerImage.create({
+                            sellerId: foundSeller.sellerId,
+                            imageName: sellerImg,
+                            status: 1
+                        })       
+                    }
+                }
+                
                 const tkn = accessToken(sellerEmail)
                 res.cookie('jwt', tkn, {httpOnly: true, maxAge: maxAge*1000})
                 res.status(400).json({'message': 'Details Updated'})
@@ -358,39 +354,35 @@ const updateSellerDetails = async (req,res) => {
                     }
                 })
                 //updating Seller Image
-                const foundImage = await SellerImage.findOne({
-                    where:{
-                        sellerId : foundSeller.sellerId,
-                        imageName: '',
-                        status: 1
-                    }
-                })
-
-                if(!foundImage){
-                    
-                    const updateImage = await SellerImage.update({  
-                        status: 0
-                    },{where: {
-                            sellerId: foundSeller.sellerId,
-                            status: 1
-                        }
-                    })
-                        
-                    const newImage = await SellerImage.create({
-                        sellerId: foundSeller.sellerId,
-                        imageName: sellerImg,
-                        status: 1
-                    })             
-                    
-                }else{
-                    const updateImage = await SellerImage.update({
-                        imageName:sellerImg
-                    },{
+                if(sellerImage){
+                    const foundImage = await SellerImage.findOne({
                         where:{
-                            sellerId: foundSeller.sellerId,
+                            sellerId : foundSeller.sellerId,
                             status: 1
                         }
                     })
+
+                    if(!foundImage){
+                        const newImage = await SellerImage.create({
+                            sellerId: foundSeller.sellerId,
+                            imageName: sellerImg,
+                            status: 1
+                        })
+                    }else{
+                        const updateImage = await SellerImage.update({  
+                            status: 0
+                        },{where: {
+                                sellerId: foundSeller.sellerId,
+                                status: 1
+                            }
+                        })
+
+                        const newImage = await SellerImage.create({
+                            sellerId: foundSeller.sellerId,
+                            imageName: sellerImg,
+                            status: 1
+                        })       
+                    }
                 }
 
                 const tkn = accessToken(sellerEmail)
