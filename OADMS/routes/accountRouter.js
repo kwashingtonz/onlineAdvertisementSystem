@@ -1,6 +1,7 @@
 //imports
 const itemController = require('../controllers/itemController')
 const sellerController = require('../controllers/sellerController')
+const sellerImageMiddleware = require('../middleware/sellerImageUpload')
 const router = require('express').Router()
 
 
@@ -28,7 +29,7 @@ router.route('/settings')
     //get seller details
     .get(sellerController.getSellerDetails)
     //update change settings
-    .post(sellerController.updateSellerDetails)
+    .post(sellerImageMiddleware.upload,sellerController.updateSellerDetails)
 
 
 module.exports = router
