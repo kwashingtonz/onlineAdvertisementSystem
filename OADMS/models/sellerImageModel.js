@@ -2,8 +2,7 @@ module.exports = (sequelize, DataTypes) =>{
     const SellerImage = sequelize.define("sellerImage",{
        imageSellerId: {
             type: DataTypes.INTEGER,
-            primaryKey:true,
-            allowNull: false
+            primaryKey:true
         },
         sellerId: {
             type: DataTypes.INTEGER,

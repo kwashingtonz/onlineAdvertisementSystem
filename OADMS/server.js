@@ -66,6 +66,9 @@ app.use('/account', verifyJWT ,accountRouter)
 app.use('/logout',logoutRouter)
 
 
+//static Image folder
+app.use('/images', express.static('./images'))
+
 //server
 app.listen(PORT, () => {
     console.log(`server is running ${PORT}`)

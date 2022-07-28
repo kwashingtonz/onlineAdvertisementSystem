@@ -11,6 +11,8 @@ const Seller = db.sellers
 const City = db.cities
 const Item = db.items
 const Category = db.categories
+const SellerImage = db.sellerimages
+
 
 //Time for cookie to be saved
 const maxAge = 3 * 24 * 60 * 60
@@ -20,6 +22,7 @@ const maxAge = 3 * 24 * 60 * 60
 //register new seller
 const addNewSeller = async (req,res) => {
     const {sellerName,sellerEmail,sellerPassword,sellerCity,sellerContact} = req.body
+    const sellerImage = req.file.path
 
     //checking all data is available
     if(!sellerName || !sellerEmail || !sellerPassword || !sellerCity || !sellerContact)
@@ -47,6 +50,20 @@ const addNewSeller = async (req,res) => {
                 sellerCity: sellerCity,
                 sellerContact: sellerContact    
             },{fields : ['sellerName','sellerEmail','sellerPassword','sellerCity','sellerContact'] })
+            
+            //Image uploading
+            const getSellerId = await Seller.findOne({
+                where:{
+                    sellerEmail: sellerEmail
+                }
+            })
+
+            const newImage = await SellerImage.create({
+                sellerId: getSellerId.sellerId,
+                imageName: sellerImage,
+                status: 1
+            })
+            
             res.redirect('/login?success='+ encodeURIComponent('yes'))
         } catch (err){
             res.status(500).json({'message': err.message })
