@@ -53,7 +53,7 @@ const getSearchItems = async (req,res) => {
             attributes:[]
         }],
         where: {
-            itemName : searchI,
+            itemName : {[Sequelize.Op.like]: `%${searchI}%`},
             status : 1
         }
     })
