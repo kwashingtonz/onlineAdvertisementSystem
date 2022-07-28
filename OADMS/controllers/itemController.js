@@ -308,7 +308,7 @@ const getAllItemsBySeller = async (req,res) => {
 }
 
 
-//get item by itemId
+//get item by itemId to edit
 const getItemDetails = async (req,res) => {
     const itemId = req.query.itemId
     
@@ -366,6 +366,34 @@ const getItemDetails = async (req,res) => {
             contact: item.itemContact,
             city : foundCity.cityName
         }
+        })    
+   
+}
+
+//Get Item Information to normal user
+const getItemInformation = async (req,res) => {
+    const itemId = req.query.itemId
+
+    if(!itemId) return res.status(400).json({ 'message' : 'Specify an item id'})
+    
+    const item =  await Item.findOne({
+        include: [{
+            model: Seller,
+            as: 'seller',
+            attributes:[
+                'sellerName'
+            ]
+        }],
+        where: {
+            itemId : itemId,
+            status : 1
+        }
+    })
+
+    if(!item) return res.status(400).json({ 'message' : 'No such item'})
+
+    res.status(200).send({
+        item : item,
         })    
    
 }
@@ -628,6 +656,7 @@ module.exports = {
     postSearchItems,
     getAllItemsBySeller,
     getItemDetails,
+    getItemInformation,
     unpublishItem,
     getAddItemNecessities,
     addItem,

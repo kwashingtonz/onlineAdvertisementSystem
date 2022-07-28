@@ -4,10 +4,17 @@ const router = require('express').Router()
 
 
 router.route('/')
-    //get Items Page
+    //List Items Page
     .get(itemController.getAllItems)
-    //Get filterd Items - category or city
+    //List filterd Items - category or city or name
     .post(itemController.postSearchItems)
-    
+
+router.route('/item')
+    //Show item and details
+    .get(itemController.getItemInformation)    
+
+router.route('/seller')
+    //get seller profile
+    .get()
 
 module.exports = router
