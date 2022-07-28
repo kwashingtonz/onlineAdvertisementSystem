@@ -13,29 +13,61 @@ const ItemCondition = db.itemconditions
 
 //main work 
 
-//get All Items
+//get Item Page
 const getAllItems = async (req,res) => {
 
-    const item =  await Item.findAll({
-        include:[{
-            model: Category,
-            as: 'category',
-            attributes:[]
-        }],
-        where: {
-            status : 1
-        }
-    })
-    res.status(200).send({
-        items : item
-    })
+    let name = req.query.name
+    let category = req.query.category
+    let city =req.query.city
 
+    const cat =  await Category.findAll()
+    const cty = await City.findAll()
+
+    if(!category){
+        //get All Items
+        const item =  await Item.findAll({
+            include:[{
+                model: Category,
+                as: 'category',
+                attributes:[]
+            }],
+            where: {
+                status : 1
+            }
+        })
+        res.status(200).send({
+            categories : cat,
+            cities: cty,
+            items : item
+        })
+    }else{
+        //get items by category
+        const item =  await Item.findAll({
+            include:[{
+                model: Category,
+                as: 'category',
+                attributes:[]
+            }],
+            where: {
+                status : 1,
+                catId : category
+            }
+        })
+        
+        res.status(200).send({
+            categories : cat,
+            cities: cty,
+            items : item
+        })
+    }
 }
 
 //post searched Items
 const postSearchItems = (req,res) =>{
-    let searchName = req.body.searchName
-    res.redirect('/items/search?name='+searchName)
+    let name = req.body.name
+    let category = req.body.category
+    let city = req.body.city
+    res.redirect(`/items?name=${name}&category=${category}&city=${city}`)
 }
 
 //get searched Items
@@ -64,30 +96,6 @@ const getSearchItems = async (req,res) => {
 
 }
 
-//get items by category
-const getAllItemsByCategory = async (req,res) => {
-
-    let cat = req.query.catId
-
-    if(!cat) return res.status(400).json({ 'message' : 'Specify a category type'});
-
-    const item =  await Item.findAll({
-        include:[{
-            model: Category,
-            as: 'category',
-            attributes:[]
-        }],
-        where: {
-            status : 1,
-            catId : cat
-        }
-    })
-    
-    res.status(200).send({
-        items : item
-    })
-
-}
 
 //get items by seller
 const getAllItemsBySeller = async (req,res) => {
@@ -463,7 +471,6 @@ module.exports = {
     getAllItems,
     postSearchItems,
     getSearchItems,
-    getAllItemsByCategory,
     getAllItemsBySeller,
     getItemDetails,
     unpublishItem,

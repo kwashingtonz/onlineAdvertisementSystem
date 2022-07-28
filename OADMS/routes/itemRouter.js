@@ -4,20 +4,13 @@ const router = require('express').Router()
 
 
 router.route('/')
-    //get all Items
+    //get Items Page
     .get(itemController.getAllItems)
-
+    //Get filterd Items - category or city
+    .post(itemController.postSearchItems)
     
 router.route('/search')
     //get Searched Items
     .get(itemController.getSearchItems)
-    //searching by item name
-    .post(itemController.postSearchItems)
-
-
-router.route('/category')
-    //get Items By Category
-    .get(itemController.getAllItemsByCategory)
-
 
 module.exports = router
