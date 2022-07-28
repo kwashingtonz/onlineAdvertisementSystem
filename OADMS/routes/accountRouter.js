@@ -18,7 +18,7 @@ router.route('/edit')
     //edit listing --  get categories, itemconditions, cities ,itemContact, itemCity
     .get(itemController.getItemDetails)
     //save edit listing
-    .post()
+    .post(itemController.editItem)
 
 router.route('/delete')
     //delete or unpublish listing

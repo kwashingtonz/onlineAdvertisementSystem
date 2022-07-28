@@ -373,6 +373,70 @@ const addItem = async (req,res) => {
 }
 
 
+//Edit Item Post
+const editItem = async (req,res) => {
+
+    const {itemName,itemCategory,itemCondition,itemPrice,itemDescription,itemCity,itemContact} = req.body
+
+    if(!itemName || !itemCategory || !itemCondition || !itemPrice || !itemDescription || !itemCity || !itemContact)
+        return res.status(400).json({'message': 'All information are required'})
+
+        const itemId = req.query.itemId
+        const token = req.cookies.jwt
+        let sellerEmail 
+        
+        if(token){
+            jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decodedToken) => {
+                if(err){
+                    return res.status(400).json({ 'message' : 'jwt error'})
+                }else{
+                    sellerEmail = decodedToken.email
+                }
+            })
+        }else{
+            res.redirect('/login');
+        }
+    
+        if(!sellerEmail) return res.status(400).json({ 'message' : 'User not logged in'})
+       
+        const foundSeller = await Seller.findOne({
+            where: {
+                sellerEmail : sellerEmail
+            }
+        })
+    
+        if(!foundSeller) return res.sendStatus(403) //Forbidden
+
+        const foundItem= await Item.findOne({
+            where: {
+                itemId : itemId,
+                sellerId : foundSeller.sellerId
+            }
+        })
+    
+        if(!foundItem) return res.sendStatus(403) //Forbidden
+
+        const updateItem = await Item.update({
+            catId: itemCategory,
+            itemName: itemName,
+            itemCondition: itemCondition,
+            itemPrice: itemPrice,
+            itemCity: itemCity,
+            itemContact: itemContact,
+            itemDescription: itemDescription,
+            status: 1
+        },{
+            where: {
+                itemId : itemId,
+                sellerId : foundSeller.sellerId
+            }
+        })
+    
+        res.redirect('/account')
+}
+
+
+
 //DateTime formating
 function padTo2Digits(num) {
     return num.toString().padStart(2, '0');
@@ -404,5 +468,6 @@ module.exports = {
     getItemDetails,
     unpublishItem,
     getAddItemNecessities,
-    addItem
+    addItem,
+    editItem
 }
