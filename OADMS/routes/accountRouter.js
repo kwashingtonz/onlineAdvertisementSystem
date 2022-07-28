@@ -31,5 +31,8 @@ router.route('/settings')
     //update change settings
     .post(sellerImageMiddleware.upload,sellerController.updateSellerDetails)
 
+router.route('/settings/imgdel')
+    .get(sellerController.removeSellerImage)
+
 
 module.exports = router
