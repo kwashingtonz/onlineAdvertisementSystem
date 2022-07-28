@@ -9,7 +9,8 @@ require('dotenv').config();
 //create main Model
 const Seller = db.sellers
 const City = db.cities
-
+const Item = db.items
+const Category = db.categories
 
 //Time for cookie to be saved
 const maxAge = 3 * 24 * 60 * 60
@@ -137,7 +138,74 @@ const getSellerDetails = async (req,res) => {
         })    
    
 }
+ 
+
+//get seller details to the seller Profile
+const getSellerInfo = async (req,res) => {
+  
+    const sellerId = req.query.seller 
+
+    if(!sellerId) return res.status(400).json({ 'message' : 'Specify a sellerId'})
+
+    const foundSeller = await Seller.findOne({
+        include:[{
+            model: City,
+            as: 'city',
+            attributes:[
+                'cityName'
+            ]
+        }],
+        attributes:{
+            exclude: ['sellerId','sellerCity','sellerEmail','sellerPassword']
+        },
+        where: {
+            sellerId : sellerId
+        }
+    })
+
+    if(!foundSeller) return res.status(400).json({ 'message' : 'No such seller'})
+    
+    const item =  await Item.findAll({
+        include:[{
+            model: Category,
+            as: 'category',
+            attributes:[
+                'catName'
+            ]
+        },{
+            model: City,
+            as: 'city',
+            attributes:[
+                'cityName'
+            ]
+        }],
+        attributes:{
+            exclude: ['catId','sellerId','itemCondition','itemCity','itemContact','itemDescription','status']
+        },
+        where: {
+            status : 1,
+            sellerId : sellerId
+        }
+    })
+    
+    if(item.length>0){
+        res.status(200).send({
+            seller : foundSeller,
+            items : item
+            })   
+    }else{
+        res.status(200).send({
+            seller : foundSeller,
+            message : 'no listings'
+            })   
+    }
+
+
+
+     
    
+}
+
 //update SellerDetails
 const updateSellerDetails = async (req,res) => {
 
@@ -229,5 +297,6 @@ module.exports = {
     addNewSeller,
     handleSellerLogin,
     getSellerDetails,
-    updateSellerDetails
+    updateSellerDetails,
+    getSellerInfo
 }

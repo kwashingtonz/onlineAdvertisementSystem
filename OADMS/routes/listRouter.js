@@ -2,7 +2,6 @@
 const itemController = require('../controllers/itemController')
 const router = require('express').Router()
 
-
 router.route('/')
     //List Items Page
     .get(itemController.getAllItems)
@@ -13,8 +12,5 @@ router.route('/item')
     //Show item and details
     .get(itemController.getItemInformation)    
 
-router.route('/seller')
-    //get seller profile
-    .get()
 
 module.exports = router

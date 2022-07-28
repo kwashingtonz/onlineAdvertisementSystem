@@ -38,6 +38,7 @@ const regRouter = require('./routes/registerRouter.js')
 const loginRouter = require('./routes/loginRouter.js')
 const logoutRouter = require('./routes/logoutRouter.js')
 const accountRouter = require('./routes/accountRouter.js')
+const sellerRouter = require('./routes/sellerRouter.js')
 
 
 //sending seller data as response to every route
@@ -48,6 +49,9 @@ app.use('/', indexRouter)
 
 //getting items list
 app.use('/list', listRouter)
+
+//getting seller pofile
+app.use('/seller', sellerRouter)
 
 //seller registration
 app.use('/register', regRouter)
