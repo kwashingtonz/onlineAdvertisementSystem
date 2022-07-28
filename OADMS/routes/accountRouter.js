@@ -8,19 +8,19 @@ const router = require('express').Router()
 
 router.route('/')
     //get all Listings by the seller
-    .get(itemController.getAllItemsBySeller)
+    .get(itemController.getAllItemsBySeller) ///////////    get itemImage using association
 
 router.route('/add')
     //add listing -- get categories, itemconditions, cities ,sellerContact, sellerCity
     .get(itemController.getAddItemNecessities)
     //save listing
-    .post(itemImageMiddleware.upload,itemController.addItem)
+    .post(itemImageMiddleware.upload,itemController.addItem) ///////////   add itemImages
 
 router.route('/edit')
     //edit listing --  get categories, itemconditions, cities ,itemContact, itemCity
-    .get(itemController.getItemDetails)
+    .get(itemController.getItemDetails) //////////// get itemImage using association
     //save edit listing
-    .post(itemImageMiddleware.upload,itemController.editItem)
+    .post(itemImageMiddleware.upload,itemController.editItem) ///////////// edit itemImages
 
 router.route('/delete')
     //delete or unpublish listing
