@@ -2,6 +2,7 @@
 const itemController = require('../controllers/itemController')
 const sellerController = require('../controllers/sellerController')
 const sellerImageMiddleware = require('../middleware/sellerImageUpload')
+const itemImageMiddleware = require('../middleware/itemImageUpload')
 const router = require('express').Router()
 
 
@@ -13,13 +14,13 @@ router.route('/add')
     //add listing -- get categories, itemconditions, cities ,sellerContact, sellerCity
     .get(itemController.getAddItemNecessities)
     //save listing
-    .post(itemController.addItem)
+    .post(itemImageMiddleware.upload,itemController.addItem)
 
 router.route('/edit')
     //edit listing --  get categories, itemconditions, cities ,itemContact, itemCity
     .get(itemController.getItemDetails)
     //save edit listing
-    .post(itemController.editItem)
+    .post(itemImageMiddleware.upload,itemController.editItem)
 
 router.route('/delete')
     //delete or unpublish listing
