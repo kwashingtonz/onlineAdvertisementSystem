@@ -192,7 +192,23 @@ const postSearchItems = (req,res) =>{
     let name = req.body.name
     let category = req.body.category
     let city = req.body.city
-    res.redirect(`/items?name=${name}&category=${category}&city=${city}`)
+
+    if(!name && !category && !city)
+        res.redirect(`/items`)
+    else if(name && !category && !city)
+        res.redirect(`/items?name=${name}`)
+    else if(!name &&  category && !city)
+        res.redirect(`/items?category=${category}`)
+    else if(!name &&  !category && city)
+        res.redirect(`/items?city=${city}`)
+    else if(name &&  category && !city)
+        res.redirect(`/items?name=${name}&category=${category}`)
+    else if(name &&  !category && city)
+        res.redirect(`/items?name=${name}&city=${city}`)
+    else if(!name &&  category && city)
+        res.redirect(`/items?category=${category}&city=${city}`)
+    else
+        res.redirect(`/items?name=${name}&category=${category}&city=${city}`)
 }
 
 
