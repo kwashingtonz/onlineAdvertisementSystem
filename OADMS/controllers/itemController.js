@@ -23,9 +23,12 @@ const getAllItems = async (req,res) => {
     const cat =  await Category.findAll()
     const cty = await City.findAll()
 
+    const { page, size } = req.query;
+    const { limit, offset } = getPagination(page, size);
+
     if(!category && !name && !city){
         //get All Items
-        const item =  await Item.findAll({
+        const item =  await Item.findAndCountAll({
             include:[{
                 model: Category,
                 as: 'category',
@@ -33,35 +36,42 @@ const getAllItems = async (req,res) => {
             }],
             where: {
                 status : 1
-            }
+            },
+            limit, offset
         })
+
+        const pagitem = getPagingData(item, page, limit)
+
         res.status(200).send({
             categories : cat,
             cities: cty,
-            items : item
+            data : pagitem
         })
     }else if(category && !name && !city){
         //get items by category
-        const item =  await Item.findAll({
+        const item =  await Item.findAndCountAll({
             include:[{
                 model: Category,
                 as: 'category',
                 attributes:[]
             }],
             where: {
-                status : 1,
-                catId : category
-            }
+                catId : category,
+                status : 1
+            },
+            limit, offset
         })
         
+        const pagitem = getPagingData(item, page, limit)
+
         res.status(200).send({
             categories : cat,
             cities: cty,
-            items : item
+            data : pagitem
         })
     }else if(!category && name && !city){
         //get items by name
-        const item =  await Item.findAll({
+        const item =  await Item.findAndCountAll({
 
             include:[{
                 model: Category,
@@ -71,17 +81,20 @@ const getAllItems = async (req,res) => {
             where: {
                 itemName : {[Sequelize.Op.like]: `%${name}%`},
                 status : 1
-            }
+            },
+            limit, offset
         })
+
+        const pagitem = getPagingData(item, page, limit)
 
         res.status(200).send({
             categories : cat,
             cities: cty,
-            items : item
+            data : pagitem
         })
     }else if(!category && !name && city){
         //get items by city
-        const item =  await Item.findAll({
+        const item =  await Item.findAndCountAll({
 
             include:[{
                 model: Category,
@@ -91,17 +104,20 @@ const getAllItems = async (req,res) => {
             where: {
                 itemCity : city, 
                 status : 1
-            }
+            },
+            limit, offset
         })
+
+        const pagitem = getPagingData(item, page, limit)
 
         res.status(200).send({
             categories : cat,
             cities: cty,
-            items : item
+            data : pagitem
         })
     }else if(category && name && !city){
         //get items by category and name
-        const item =  await Item.findAll({
+        const item =  await Item.findAndCountAll({
 
             include:[{
                 model: Category,
@@ -112,17 +128,20 @@ const getAllItems = async (req,res) => {
                 catId : category,
                 itemName : {[Sequelize.Op.like]: `%${name}%`},
                 status : 1
-            }
+            },
+            limit, offset
         })
+
+        const pagitem = getPagingData(item, page, limit)
 
         res.status(200).send({
             categories : cat,
             cities: cty,
-            items : item
+            data : pagitem
         })
     }else if(!category && name && city){
         //get items by name and city
-        const item =  await Item.findAll({
+        const item =  await Item.findAndCountAll({
 
             include:[{
                 model: Category,
@@ -133,17 +152,20 @@ const getAllItems = async (req,res) => {
                 itemCity : city,
                 itemName : {[Sequelize.Op.like]: `%${name}%`},
                 status : 1
-            }
+            },
+            limit, offset
         })
+
+        const pagitem = getPagingData(item, page, limit)
 
         res.status(200).send({
             categories : cat,
             cities: cty,
-            items : item
+            data : pagitem
         })
     }else if(category && !name && city){
         //get items by category and city
-        const item =  await Item.findAll({
+        const item =  await Item.findAndCountAll({
 
             include:[{
                 model: Category,
@@ -154,17 +176,20 @@ const getAllItems = async (req,res) => {
                 catId: category,
                 itemCity : city,
                 status : 1
-            }
+            },
+            limit, offset
         })
+
+        const pagitem = getPagingData(item, page, limit)
 
         res.status(200).send({
             categories : cat,
             cities: cty,
-            items : item
+            data : pagitem
         })
     }else{
         //get items by category , name and city
-        const item =  await Item.findAll({
+        const item =  await Item.findAndCountAll({
 
             include:[{
                 model: Category,
@@ -176,13 +201,16 @@ const getAllItems = async (req,res) => {
                 itemName : {[Sequelize.Op.like]: `%${name}%`},
                 itemCity : city,
                 status : 1
-            }
+            },
+            limit, offset
         })
+
+        const pagitem = getPagingData(item, page, limit)
 
         res.status(200).send({
             categories : cat,
             cities: cty,
-            items : item
+            data : pagitem
         })
     }
 }
@@ -580,6 +608,19 @@ function formatDate(date) {
       ].join(':')
     );
 }
+
+const getPagination = (page, size) => {
+    const limit = size ? +size : 10;
+    const offset = page ? page * limit : 0;
+    return { limit, offset };
+  };
+
+  const getPagingData = (data, page, limit) => {
+    const { count: totalItems, rows: items } = data;
+    const currentPage = page ? +page : 0;
+    const totalPages = Math.ceil(totalItems / limit);
+    return { totalItems, items, totalPages, currentPage };
+  };
 
 
 module.exports = {
