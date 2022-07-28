@@ -113,7 +113,7 @@ db.items.belongsTo(db.sellers,{
     as: 'seller'
 })
 
-//Seller has mang seller images
+//Seller has many seller images
 db.sellers.hasMany(db.sellerimages,{
     foreignKey: 'sellerId',
     as: 'sellerImage'
@@ -123,5 +123,17 @@ db.sellerimages.belongsTo(db.sellers,{
     foreignKey: 'sellerId',
     as: 'seller'
 })
+
+//Item has many item images
+db.items.hasMany(db.itemimages,{
+    foreignKey: 'itemId',
+    as: 'itemImage'
+})
+
+db.itemimages.belongsTo(db.items,{
+    foreignKey: 'itemId',
+    as: 'item'
+})
+
 
 module.exports = db
