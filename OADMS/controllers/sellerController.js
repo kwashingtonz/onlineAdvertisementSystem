@@ -304,28 +304,19 @@ const updateSellerDetails = async (req,res) => {
 
                 if(!foundImage){
                     
-                    const findImage = await SellerImage.findOne({
-                        where:{
-                            sellerId : foundSeller.sellerId,
+                    const updateImage = await SellerImage.update({  
+                        status: 0
+                    },{where: {
+                            sellerId: foundSeller.sellerId,
                             status: 1
                         }
                     })
-
-                    if(findImage.imageName != sellerImg){
-                        const updateImage = await SellerImage.update({  
-                            status: 0
-                        },{where: {
-                                sellerId: foundSeller.sellerId,
-                                status: 1
-                            }
-                        })
                         
-                        const newImage = await SellerImage.create({
-                            sellerId: foundSeller.sellerId,
-                            imageName: sellerImg,
-                            status: 1
-                        })
-                    }
+                    const newImage = await SellerImage.create({
+                        sellerId: foundSeller.sellerId,
+                        imageName: sellerImg,
+                        status: 1
+                    })       
                     
                 }else{
                     const updateImage = await SellerImage.update({
@@ -377,28 +368,19 @@ const updateSellerDetails = async (req,res) => {
 
                 if(!foundImage){
                     
-                    const findImage = await SellerImage.findOne({
-                        where:{
-                            sellerId : foundSeller.sellerId,
+                    const updateImage = await SellerImage.update({  
+                        status: 0
+                    },{where: {
+                            sellerId: foundSeller.sellerId,
                             status: 1
                         }
                     })
-
-                    if(findImage.imageName != sellerImg){
-                        const updateImage = await SellerImage.update({  
-                            status: 0
-                        },{where: {
-                                sellerId: foundSeller.sellerId,
-                                status: 1
-                            }
-                        })
                         
-                        const newImage = await SellerImage.create({
-                            sellerId: foundSeller.sellerId,
-                            imageName: sellerImg,
-                            status: 1
-                        })
-                    }
+                    const newImage = await SellerImage.create({
+                        sellerId: foundSeller.sellerId,
+                        imageName: sellerImg,
+                        status: 1
+                    })             
                     
                 }else{
                     const updateImage = await SellerImage.update({
