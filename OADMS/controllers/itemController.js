@@ -803,6 +803,12 @@ const delImgs = async (req,res) => {
             status: 1
         }
     })
+
+    const updImg = await ItemImage.create({
+                itemId: foundItem.itemId,
+                imageName: '',
+                status: 1
+    })
    
     res.redirect('/account/edit?itemId='+foundItem.itemId)
 }
