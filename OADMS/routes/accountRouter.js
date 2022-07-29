@@ -14,7 +14,7 @@ router.route('/add')
     //add listing -- get categories, itemconditions, cities ,sellerContact, sellerCity
     .get(itemController.getAddItemNecessities)
     //save listing
-    .post(itemImageMiddleware.upload,itemController.addItem) ///////////   add itemImages
+    .post(itemImageMiddleware.upload,itemController.addItem)
 
 router.route('/edit')
     //edit listing --  get categories, itemconditions, cities ,itemContact, itemCity

@@ -10,6 +10,7 @@ const Item = db.items
 const Seller = db.sellers
 const City = db.cities
 const ItemCondition = db.itemconditions
+const ItemImage = db.itemimages
 
 //main work 
 
@@ -504,6 +505,15 @@ const unpublishItem = async (req,res) => {
 const addItem = async (req,res) => {
 
     const {itemName,itemCategory,itemCondition,itemPrice,itemDescription,itemCity,itemContact} = req.body
+    const itemImages = req.files
+
+    let itemImgs = []
+
+    if(itemImages){
+        for(var count=0; count<itemImages.length; count++){
+            itemImgs[count] = itemImages[count].path
+        }
+    }
 
     if(!itemName || !itemCategory || !itemCondition || !itemPrice || !itemDescription || !itemCity || !itemContact)
         return res.status(400).json({'message': 'All information are required'})
@@ -534,7 +544,8 @@ const addItem = async (req,res) => {
         if(!foundSeller) return res.sendStatus(403) //Forbidden
 
         const dt = formatDate(new Date()).toString()
-
+        
+ 
         const newItem = await Item.create({
             catId: itemCategory,
             sellerId: foundSeller.sellerId,
@@ -548,6 +559,23 @@ const addItem = async (req,res) => {
             status: 1
         },{fields : ['catId','sellerId','itemName','itemCondition','itemPrice','itemDateAndTime','itemCity','itemContact','itemDescription','status'] })
     
+
+        if(itemImages){
+            const getItemId = await Item.findOne({
+                where:{
+                    sellerId: foundSeller.sellerId
+                },
+                order:[ [ 'itemId', 'DESC' ] ]
+            })
+
+            const newImage = await ItemImage.create({
+                itemId: getItemId.itemId,
+                imageName: itemImgs.toString(),
+                status: 1
+            }) 
+        }
+
+
         res.redirect('/account')
 }
 
