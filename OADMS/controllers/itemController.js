@@ -281,13 +281,16 @@ const getAllItemsBySeller = async (req,res) => {
             attributes:[
                 'cityName'
             ]
-        }/* ,{
-            model: ItemCondition,
-            as: 'itemcondition',
+        } ,{
+            model: ItemImage,
+            as: 'itemImage',
             attributes:[
-                'itemCondition'
-            ]
-        } */],
+                'imageName' // in the front end split the string and get only the first image as the main image
+            ],
+            where:{
+                status: 1
+            }
+        } ],
         attributes:{
             exclude: ['catId','sellerId','itemCondition','itemCity','itemContact','itemDescription','status']
         },
@@ -339,6 +342,18 @@ const getItemDetails = async (req,res) => {
     if(!foundSeller) return res.sendStatus(403) //Forbidden
 
     const item =  await Item.findOne({
+        include:[
+            {
+                model: ItemImage,
+                as: 'itemImage',
+                attributes:[
+                    'imageName' // in the front end split the string to an array and seperately get the images
+                ],
+                where:{
+                    status: 1
+                }
+            } 
+        ],
         where: {
             itemId : itemId,
             sellerId : foundSeller.sellerId,

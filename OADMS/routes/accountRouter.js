@@ -8,7 +8,7 @@ const router = require('express').Router()
 
 router.route('/')
     //get all Listings by the seller
-    .get(itemController.getAllItemsBySeller) ///////////    get itemImage using association
+    .get(itemController.getAllItemsBySeller)
 
 router.route('/add')
     //add listing -- get categories, itemconditions, cities ,sellerContact, sellerCity
@@ -18,7 +18,7 @@ router.route('/add')
 
 router.route('/edit')
     //edit listing --  get categories, itemconditions, cities ,itemContact, itemCity
-    .get(itemController.getItemDetails) //////////// get itemImage using association
+    .get(itemController.getItemDetails)
     //save edit listing
     .post(itemImageMiddleware.upload,itemController.editItem) ///////////// edit itemImages
 
