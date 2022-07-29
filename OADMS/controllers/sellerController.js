@@ -12,6 +12,7 @@ const City = db.cities
 const Item = db.items
 const Category = db.categories
 const SellerImage = db.sellerimages
+const ItemImage = db.itemimages
 
 
 //Time for cookie to be saved
@@ -210,6 +211,15 @@ const getSellerInfo = async (req,res) => {
             attributes:[
                 'cityName'
             ]
+        },{
+            model: ItemImage,
+            as: 'itemImage',
+            attributes: [
+                'imageName'
+            ],
+            where:{
+                status: 1
+            }
         }],
         attributes:{
             exclude: ['catId','sellerId','itemCondition','itemCity','itemContact','itemDescription','status']

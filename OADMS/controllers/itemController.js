@@ -34,6 +34,15 @@ const getAllItems = async (req,res) => {
                 model: Category,
                 as: 'category',
                 attributes:[]
+            },{
+                model: ItemImage,
+                as: 'itemImage',
+                attributes:[
+                    'imageName'
+                ],
+                where:{
+                    status:1
+                }
             }],
             where: {
                 status : 1
@@ -55,6 +64,15 @@ const getAllItems = async (req,res) => {
                 model: Category,
                 as: 'category',
                 attributes:[]
+            },{
+                model: ItemImage,
+                as: 'itemImage',
+                attributes:[
+                    'imageName'
+                ],
+                where:{
+                    status:1
+                }
             }],
             where: {
                 catId : category,
@@ -78,6 +96,15 @@ const getAllItems = async (req,res) => {
                 model: Category,
                 as: 'category',
                 attributes:[]
+            },{
+                model: ItemImage,
+                as: 'itemImage',
+                attributes:[
+                    'imageName'
+                ],
+                where:{
+                    status:1
+                }
             }],
             where: {
                 itemName : {[Sequelize.Op.like]: `%${name}%`},
@@ -101,6 +128,15 @@ const getAllItems = async (req,res) => {
                 model: Category,
                 as: 'category',
                 attributes:[]
+            },{
+                model: ItemImage,
+                as: 'itemImage',
+                attributes:[
+                    'imageName'
+                ],
+                where:{
+                    status:1
+                }
             }],
             where: {
                 itemCity : city, 
@@ -124,6 +160,15 @@ const getAllItems = async (req,res) => {
                 model: Category,
                 as: 'category',
                 attributes:[]
+            },{
+                model: ItemImage,
+                as: 'itemImage',
+                attributes:[
+                    'imageName'
+                ],
+                where:{
+                    status:1
+                }
             }],
             where: {
                 catId : category,
@@ -148,6 +193,15 @@ const getAllItems = async (req,res) => {
                 model: Category,
                 as: 'category',
                 attributes:[]
+            },{
+                model: ItemImage,
+                as: 'itemImage',
+                attributes:[
+                    'imageName'
+                ],
+                where:{
+                    status:1
+                }
             }],
             where: {
                 itemCity : city,
@@ -172,6 +226,15 @@ const getAllItems = async (req,res) => {
                 model: Category,
                 as: 'category',
                 attributes:[]
+            },{
+                model: ItemImage,
+                as: 'itemImage',
+                attributes:[
+                    'imageName'
+                ],
+                where:{
+                    status:1
+                }
             }],
             where: {
                 catId: category,
@@ -196,6 +259,15 @@ const getAllItems = async (req,res) => {
                 model: Category,
                 as: 'category',
                 attributes:[]
+            },{
+                model: ItemImage,
+                as: 'itemImage',
+                attributes:[
+                    'imageName'
+                ],
+                where:{
+                    status:1
+                }
             }],
             where: {
                 catId: category,
@@ -287,7 +359,7 @@ const getAllItemsBySeller = async (req,res) => {
             attributes:[
                 'imageName' // in the front end split the string and get only the first image as the main image
             ],
-            where:{
+            where: {
                 status: 1
             }
         } ],
@@ -399,6 +471,15 @@ const getItemInformation = async (req,res) => {
             attributes:[
                 'sellerName'
             ]
+        },{
+            model: ItemImage,
+            as: 'itemImage',
+            attributes:[
+                'imageName' //can split and get the images seperately to put into the slider
+            ],
+            where:{
+                status:1
+            }
         }],
         where: {
             itemId : itemId,
@@ -575,7 +656,7 @@ const addItem = async (req,res) => {
         },{fields : ['catId','sellerId','itemName','itemCondition','itemPrice','itemDateAndTime','itemCity','itemContact','itemDescription','status'] })
     
 
-        if(itemImages){
+        
             const getItemId = await Item.findOne({
                 where:{
                     sellerId: foundSeller.sellerId
@@ -588,7 +669,7 @@ const addItem = async (req,res) => {
                 imageName: itemImgs.toString(),
                 status: 1
             }) 
-        }
+        
 
 
         res.redirect('/account')
