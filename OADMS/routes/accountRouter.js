@@ -20,7 +20,10 @@ router.route('/edit')
     //edit listing --  get categories, itemconditions, cities ,itemContact, itemCity
     .get(itemController.getItemDetails)
     //save edit listing
-    .post(itemImageMiddleware.upload,itemController.editItem) ///////////// edit itemImages
+    .post(itemImageMiddleware.upload,itemController.editItem)
+
+router.route('/edit/delimgs')
+    .get(itemController.delImgs)
 
 router.route('/delete')
     //delete or unpublish listing

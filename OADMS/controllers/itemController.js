@@ -681,6 +681,16 @@ const editItem = async (req,res) => {
 
     const {itemName,itemCategory,itemCondition,itemPrice,itemDescription,itemCity,itemContact} = req.body
 
+    const itemImages = req.files
+
+    let itemImgs = []
+
+    if(itemImages){
+        for(var count=0; count<itemImages.length; count++){
+            itemImgs[count] = itemImages[count].path
+        }
+    }    
+
     if(!itemName || !itemCategory || !itemCondition || !itemPrice || !itemDescription || !itemCity || !itemContact)
         return res.status(400).json({'message': 'All information are required'})
 
@@ -734,8 +744,67 @@ const editItem = async (req,res) => {
                 sellerId : foundSeller.sellerId
             }
         })
+
+        if(itemImages){
+            const currImgs = await ItemImage.update({
+                status: 0
+            },{
+                where: {
+                    itemId : foundItem.itemId,
+                    status : 1
+                }
+            })
+
+            const newImgs = await ItemImage.create({
+                itemId: foundItem.itemId,
+                imageName: itemImgs.toString(),
+                status: 1
+            })
+        }
     
         res.redirect('/account')
+}
+
+//remove images
+const delImgs = async (req,res) => {
+  
+    const itemId = req.query.itemId
+    const token = req.cookies.jwt
+    let sellerEmail 
+    
+    if(token){
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decodedToken) => {
+            if(err){
+                return res.status(400).json({ 'message' : 'jwt error'})
+            }else{
+                sellerEmail = decodedToken.email
+            }
+        })
+    }else{
+        res.redirect('/login');
+    }
+
+    if(!sellerEmail) return res.status(400).json({ 'message' : 'User not logged in'})
+   
+    const foundItem = await Item.findOne({
+        where: {
+            itemId : itemId,
+            status: 1
+        }
+    })
+
+    if(!foundItem) return res.sendStatus(403) //Forbidden
+
+    const remImg = await ItemImage.update({
+        status : 0
+    },{
+        where:{
+            itemId: foundItem.itemId,
+            status: 1
+        }
+    })
+   
+    res.redirect('/account/edit?itemId='+foundItem.itemId)
 }
 
 
@@ -784,5 +853,6 @@ module.exports = {
     unpublishItem,
     getAddItemNecessities,
     addItem,
-    editItem
+    editItem,
+    delImgs
 }
