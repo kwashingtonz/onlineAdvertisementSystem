@@ -3,6 +3,6 @@ const router = require('express').Router()
 
 router.route('/')
     //get seller profile
-    .get(sellerController.getSellerInfo) /////////// get itemImage using association
+    .get(sellerController.getSellerInfo)
 
 module.exports = router
