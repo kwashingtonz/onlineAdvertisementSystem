@@ -1,3 +1,5 @@
+//Defining Category Model
+
 module.exports = (sequelize, DataTypes) =>{
     const Category = sequelize.define("category",{
         catId: {

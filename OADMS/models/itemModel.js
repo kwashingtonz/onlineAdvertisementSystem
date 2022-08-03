@@ -1,3 +1,5 @@
+//Defining Item Model
+
 module.exports = (sequelize, DataTypes) =>{
     const Item = sequelize.define("item",{
        itemId: {

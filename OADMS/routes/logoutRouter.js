@@ -3,9 +3,11 @@ const router = require('express').Router()
 const logoutController = require('../controllers/logoutController')
 
 
-//handle logout
+//base route of logout router
 router.route('/')
+    //handle logout
     .get(logoutController.handleLogout)
 
-    
+ 
+//exporting module    
 module.exports = router

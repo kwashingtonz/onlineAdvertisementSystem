@@ -5,11 +5,13 @@ const sellerController = require('../controllers/sellerController')
 const sellerImageMiddleware = require('../middleware/sellerImageUpload')
 
 
-//get register page and registration
+//base route of register route
 router.route('/')
-    //get cities to register page
+    //get register page and cities to register page
     .get(cityController.getAllCities)
+    //post registration
     .post(sellerImageMiddleware.upload, sellerController.addNewSeller)
 
-    
+ 
+//exporting module    
 module.exports = router

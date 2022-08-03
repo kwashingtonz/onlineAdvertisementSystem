@@ -1,6 +1,7 @@
+//Defining Database Object
+
 //imports
 const dbConfig = require('../config/dbConfig');
-
 const {Sequelize, DataTypes} = require('sequelize');
 
 
@@ -136,4 +137,5 @@ db.itemimages.belongsTo(db.items,{
 })
 
 
+//exporting module
 module.exports = db

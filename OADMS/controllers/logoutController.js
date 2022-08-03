@@ -17,6 +17,7 @@ const handleLogout= async (req,res) => {
 }
 
 
+//eexporting module
 module.exports = {
     handleLogout
 }

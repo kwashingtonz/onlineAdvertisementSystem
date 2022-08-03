@@ -1,3 +1,5 @@
+//Defining Seller Model
+
 module.exports = (sequelize, DataTypes) =>{
     const Seller = sequelize.define("seller",{
        sellerId: {

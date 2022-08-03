@@ -445,7 +445,8 @@ const removeSellerImage = async (req,res) => {
     res.redirect('/account/settings')
 }
 
-    
+
+//exporitng modules    
 module.exports = {
     addNewSeller,
     handleSellerLogin,

@@ -1,8 +1,11 @@
-//image uploading
+//SellerImage uploading
+
+//imports
 const multer = require('multer')
 const path = require('path')
 
 
+//configuring storage path
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, "images/sellerimages")
@@ -12,6 +15,8 @@ const storage = multer.diskStorage({
     }
 })
 
+
+//Defining upload object using multer with limits and supporting extension types 
 const upload = multer({
     storage: storage,
     limits: { fileSize: '5000000'},
@@ -28,6 +33,8 @@ const upload = multer({
     
 }).single('sellerImage')
 
+
+//exporting module
 module.exports = {
     upload
 }

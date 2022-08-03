@@ -18,6 +18,7 @@ const verifyJWT = (req, res, next) => {
     if(token){
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decodedToken) => {
             if(err){
+                //if there's an error with the token, redirecting to login page
                 console.log(err.message)
                 res.redirect('/login')
             }else{
@@ -26,12 +27,14 @@ const verifyJWT = (req, res, next) => {
             }
         })
     }else{
+        //if no token exist, redirecting to login page
         res.redirect('/login')
     }
     
 }
 
-//Current user
+
+//Getting Current logged in user details
 const currentUser = (req,res,next) => {
     const token = req.cookies.jwt
 
@@ -39,6 +42,7 @@ const currentUser = (req,res,next) => {
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decodedToken) => {
             if(err){
                 console.log(err.message)
+                //if there's error with the token, the current logged in user details will be null
                 res.locals.user = null
                 next()
             }else{
@@ -51,15 +55,18 @@ const currentUser = (req,res,next) => {
                         sellerEmail : decodedToken.email
                     }
                 })
+                //if the token is available, send current logged in user details
                 res.locals.user = seller
                 next()
             }
         })
     }else{
+        //if there's no available token, the current logged in user details will be null
         res.locals.user = null
         next()
     }
 }
 
 
+//exporting module
 module.exports = { verifyJWT,currentUser }

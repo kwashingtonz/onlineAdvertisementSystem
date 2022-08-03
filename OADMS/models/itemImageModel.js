@@ -1,3 +1,5 @@
+//Defining Item Image Model
+
 module.exports = (sequelize, DataTypes) =>{
     const ItemImage = sequelize.define("itemImage",{
        imageItemId: {

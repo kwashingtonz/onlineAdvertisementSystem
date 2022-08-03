@@ -1,3 +1,5 @@
+//Defining SellerImage Model
+
 module.exports = (sequelize, DataTypes) =>{
     const SellerImage = sequelize.define("sellerImage",{
        imageSellerId: {
