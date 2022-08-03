@@ -746,20 +746,42 @@ const editItem = async (req,res) => {
         })
 
         if(itemImages){
-            const currImgs = await ItemImage.update({
-                status: 0
-            },{
-                where: {
+            
+            const findImg = await ItemImage.findOne({
+                where:{
                     itemId : foundItem.itemId,
-                    status : 1
+                    imageName : '',
+                    status: 1
                 }
             })
-
-            const newImgs = await ItemImage.create({
-                itemId: foundItem.itemId,
-                imageName: itemImgs.toString(),
-                status: 1
-            })
+            
+            if(!findImg){
+                const currImgs = await ItemImage.update({
+                    status: 0
+                },{
+                    where: {
+                        itemId : foundItem.itemId,
+                        status : 1
+                    }
+                })
+    
+                const newImgs = await ItemImage.create({
+                    itemId: foundItem.itemId,
+                    imageName: itemImgs.toString(),
+                    status: 1
+                })
+            }else{
+                const newImgs = await ItemImage.update({
+                    itemId: foundItem.itemId,
+                    imageName: itemImgs.toString(),
+                    status: 1
+                },{where:{
+                        itemId : foundItem.itemId,
+                        imageName : '',
+                        status: 1
+                    }
+                })
+            }    
         }
     
         res.redirect('/account')
