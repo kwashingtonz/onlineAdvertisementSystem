@@ -13,22 +13,29 @@ const Seller = db.sellers
 
  //check json web token exists & is verified
 const verifyJWT = (req, res, next) => {
-    const token = req.cookies.jwt  
+    const token = req.cookies.jwt
+    const authHeader = req.headers['authorization']
+    const acctoken = authHeader && authHeader.split(' ')[1]  
    
-    if(token){
+    if(token != acctoken) return res.redirect('/login')
+
+    if(token != null){
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decodedToken) => {
             if(err){
                 //if there's an error with the token, redirecting to login page
                 console.log(err.message)
+                //return res.sendStatus(403)
                 res.redirect('/login')
             }else{
                 console.log(decodedToken)
+                //req.email = decodedToken
                 next()
             }
         })
     }else{
         //if no token exist, redirecting to login page
         res.redirect('/login')
+        //return res.sendStatus(401)
     }
     
 }
