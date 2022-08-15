@@ -338,7 +338,7 @@ const updateSellerDetails = async (req,res) => {
                 
                 const tkn = accessToken(sellerEmail)
                 res.cookie('jwt', tkn, {httpOnly: true, maxAge: maxAge*1000})
-                res.status(400).json({'message': 'Details Updated'})
+                res.status(400).json({'message': 'Details Updated', 'acessToken' : tkn})
             }else{ 
                 res.status(400).json({'message': 'Current Password is incorrect'})
             }
@@ -398,7 +398,7 @@ const updateSellerDetails = async (req,res) => {
 
                 const tkn = accessToken(sellerEmail)
                 res.cookie('jwt', tkn, {httpOnly: true, maxAge: maxAge*1000})
-                res.status(400).json({'message': 'Details Updated'})
+                res.status(400).json({'message': 'Details Updated', 'acessToken' : tkn})
             }else{ 
                 res.status(400).json({'message': 'Current Password is incorrect'})
             }
