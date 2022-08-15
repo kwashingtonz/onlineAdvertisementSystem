@@ -7,7 +7,7 @@ const sellerController = require('../controllers/sellerController')
 router.route('/')
     //get login page
     .get((req,res) =>{
-        res.send('This is Login Page')
+        res.json({success: "Login Page loaded", status: 200})
     })
     //login authorization
     .post(sellerController.handleSellerLogin)

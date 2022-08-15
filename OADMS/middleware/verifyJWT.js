@@ -24,18 +24,18 @@ const verifyJWT = (req, res, next) => {
             if(err){
                 //if there's an error with the token, redirecting to login page
                 console.log(err.message)
-                //return res.sendStatus(403)
-                res.redirect('/login')
+                return res.json({success:'forbidden error' , status:403})
+                //res.redirect('/login')
             }else{
-                console.log(decodedToken)
-                //req.email = decodedToken
+                //console.log(decodedToken)
+                req.email = decodedToken
                 next()
             }
         })
     }else{
         //if no token exist, redirecting to login page
-        res.redirect('/login')
-        //return res.sendStatus(401)
+        //res.redirect('/login')
+        return res.json({success:'Not logged in error' ,status:401})
     }
     
 }
