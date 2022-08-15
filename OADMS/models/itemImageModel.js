@@ -12,7 +12,16 @@ module.exports = (sequelize, DataTypes) =>{
         },
         imageName: {
             type: DataTypes.STRING,
-            allowNull: true
+            allowNull: true,
+            get(){
+                const imgNm = this.getDataValue('imageName')
+                //imgNm ? imgNm.split(',') : null      
+                var imgArray = []
+                for(var len=0;len<imgNm.split(',').length;len++){
+                    imgArray[len] = 'http://localhost:3000/'+imgNm.split(',') [len]
+                }
+                return imgArray
+            }
         },
         status: {
             type: DataTypes.INTEGER,

@@ -157,7 +157,7 @@ const getSellerDetails = async (req,res) => {
             model: SellerImage,
             as: 'sellerImage',
             attributes:[
-                'imageName'
+                [sequelize.fn('CONCAT','http://localhost:3000/',sequelize.col('imageName')),'imageName']
             ],
             where: { status: 1 }
         }],
@@ -276,6 +276,16 @@ const updateSellerDetails = async (req,res) => {
     //checking all necessary information are available
     if(!sellerName || !sellerContact || !sellerCity ||  !sellerEmail || !sellerCurrentPassword  )
         return res.status(400).json({'message': 'All information are required'})
+
+     //check whether seller already registered
+     const duplicate = await Seller.findAll({
+        where: {
+            sellerEmail : sellerEmail
+        }
+    })
+
+    if(duplicate.length>0) 
+        return res.send({'message': 'Seller email already registered' });
 
     const token = req.cookies.jwt //get the access token from cookies
     let sellerEML 
