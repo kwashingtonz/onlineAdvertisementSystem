@@ -56,9 +56,11 @@ const getAllItems = async (req,res) => {
             },
             limit, offset
         })
-
+        
+        //paginated items
         const pagitem = getPagingData(item, page, limit)
 
+        //reponse
         res.status(200).send({
             categories : cat,
             cities: cty,
