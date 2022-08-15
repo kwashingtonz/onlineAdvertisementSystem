@@ -477,6 +477,12 @@ const removeSellerImage = async (req,res) => {
             status: 1
         }
     })
+
+    const blnkImg = await SellerImage.create({
+        sellerId: foundSeller.sellerId,
+        imageName: '',
+        status: 1
+    })
    
     res.redirect('/account/settings') // redirect or response to go back to account settings
 }
