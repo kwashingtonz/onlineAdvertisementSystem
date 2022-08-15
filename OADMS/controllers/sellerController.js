@@ -478,6 +478,7 @@ const removeSellerImage = async (req,res) => {
         }
     })
 
+    //create a path blank image
     const blnkImg = await SellerImage.create({
         sellerId: foundSeller.sellerId,
         imageName: '',
