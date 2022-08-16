@@ -136,22 +136,14 @@ const accessToken = (email) => {
 
 //get seller details by sellerEmail
 const getSellerDetails = async (req,res) => {
-  
-    const token = req.cookies.jwt //getting token from cookies
-    let sellerEmail 
     
-    //if logged in
-    if(token){
-        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decodedToken) => {
-            if(err){
-                return res.status(400).send({ message : 'Invalid Access Token'})
-            }else{
-                sellerEmail = decodedToken.email //get the email of the currently logged in user
-            }
-        })
-    }else{
-        //res.redirect('/login'); //redirect or response to login page
-        return res.status(400).send({ message : 'No Access Token'})
+    let sellerEmail 
+    //getting logged in seller email from headers
+    try {
+        sellerEmail = req.email.email;
+    } catch (e) {
+        console.log(e);
+        return res.status(400).send({ message : 'Error'})
     }
 
     if(!sellerEmail) return res.status(401).send({ message : 'Unauthorized'})
@@ -307,22 +299,14 @@ const updateSellerDetails = async (req,res) => {
     if(duplicate.length>0) 
         return res.status(400).send({ message : 'Seller email already registered' });
 
-    const token = req.cookies.jwt //get the access token from cookies
-    let sellerEML 
-        
-    //checking token available or not
-    if(token){
-        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decodedToken) => {
-            if(err){
-                return res.status(400).send({ message : 'Invalid Access Token'})
-            }else{
-                sellerEML = decodedToken.email //getting the seller email
-            }
-        })
-    }else{
-        //res.redirect('/login'); //redirect or response if no token available
-        return res.status(400).send({ message : 'No Access Token'})
-    }
+        let sellerEML 
+        //getting logged in seller email from headers
+        try {
+            sellerEML = req.email.email;
+        } catch (e) {
+            console.log(e);
+            return res.status(400).send({ message : 'Error'})
+        }
     
     if(!sellerEML) return res.status(401).send({ message : 'Unauthorized'})
 
@@ -392,6 +376,7 @@ const updateSellerDetails = async (req,res) => {
                 
                 /* const tkn = accessToken(sellerEmail) //new access token when email has been updated
                 res.cookie('jwt', tkn, {httpOnly: true, maxAge: maxAge*1000}) //updating cookie */
+                req.email = null
                 res.cookie('jwt','',{ maxAge: 1 })
                 res.status(200).send({message : 'Details Updated and Logged Out'}) // response
             }else{ 
@@ -463,6 +448,7 @@ const updateSellerDetails = async (req,res) => {
                 /* const tkn = accessToken(sellerEmail) //create new access token when email changed
                 res.cookie('jwt', tkn, {httpOnly: true, maxAge: maxAge*1000}) // update cookie with the new access token
                 res.status(400).json({'message': 'Details Updated', 'acessToken' : tkn}) //response */
+                req.email = null
                 res.cookie('jwt','',{ maxAge: 1 })
                 return res.status(200).send({message : 'Details Updated and Logged Out'})
             }else{ 
@@ -475,21 +461,13 @@ const updateSellerDetails = async (req,res) => {
 //get seller details by sellerEmail
 const removeSellerImage = async (req,res) => {
   
-    const token = req.cookies.jwt //get accesstoken from cookie
     let sellerEmail 
-    
-    //checking token available
-    if(token){
-        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decodedToken) => {
-            if(err){
-                return res.status(400).send({ message : 'Invalid Access Token'})
-            }else{
-                sellerEmail = decodedToken.email //getting selleremail form the token
-            }
-        })
-    }else{
-        //res.redirect('/login'); //redirect or response if no token available
-        return res.status(400).send({ message : 'No Access Token'})
+    //getting logged in seller email from headers
+    try {
+        sellerEmail = req.email.email;
+    } catch (e) {
+        console.log(e);
+        return res.status(400).send({ message : 'Error'})
     }
 
     if(!sellerEmail) return res.status(401).send({ message : 'Unauthorized'})
