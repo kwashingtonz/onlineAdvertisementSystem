@@ -17,7 +17,7 @@ const handleLogout= async (req,res) => {
     res.cookie('jwt','',{ maxAge: 1 })
     
     //jwtblack.blacklist(token)
-    res.status(200).json({'message': 'Logged Out'})
+    res.status(200).send({message: 'Logged Out'})
     //res.redirect('/')
 }
 
