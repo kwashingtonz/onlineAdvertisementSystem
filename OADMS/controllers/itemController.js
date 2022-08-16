@@ -374,16 +374,17 @@ const getAllItemsBySeller = async (req,res) => {
     if(token){
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decodedToken) => {
             if(err){
-                return res.status(400).json({ 'message' : 'jwt error'});
+                return res.status(400).send({ message : 'Invalid Access Token'})
             }else{
                 sellerEmail = decodedToken.email
             }
         })
     }else{
-        res.redirect('/login');
+        //res.redirect('/login');
+        return res.status(400).send({ message : 'No Access Token'})
     }
 
-    if(!sellerEmail) return res.status(400).json({ 'message' : 'User not logged in'})
+    if(!sellerEmail)  return res.status(401).send({ message : 'Unauthorized'})
 
 
     //checking for a user belong to the token
@@ -393,7 +394,7 @@ const getAllItemsBySeller = async (req,res) => {
         }
     })
 
-    if(!foundSeller) return res.sendStatus(403) //Forbidden
+    if(!foundSeller)return res.status(400).send({ message : 'Seller not found' })
 
 
     //Get Items belong to the seller
@@ -414,7 +415,7 @@ const getAllItemsBySeller = async (req,res) => {
             model: ItemImage,
             as: 'itemImage',
             attributes:[
-                'imageName' // in the front end split the string and get only the first image as the main image
+                'imageName'
             ],
             where: {
                 status: 1
@@ -434,7 +435,7 @@ const getAllItemsBySeller = async (req,res) => {
             items : item
         })    
     }else{
-        return res.status(400).json({ 'message' : 'No listings'})
+        return res.status(200).send({ message : 'No listings'})
     }
 
    
@@ -453,16 +454,17 @@ const getItemDetails = async (req,res) => {
     if(token){
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decodedToken) => {
             if(err){
-                return res.status(400).json({ 'message' : 'jwt error'})
+                return res.status(400).send({ message : 'Invalid Access Token'})
             }else{
                 sellerEmail = decodedToken.email
             }
         })
     }else{
-        res.redirect('/login');
+        //res.redirect('/login');
+        return res.status(400).send({ message : 'No Access Token'})
     }
 
-    if(!sellerEmail) return res.status(400).json({ 'message' : 'User not logged in'})
+    if(!sellerEmail) return res.status(401).send({ message : 'Unauthorized'})
    
     //checking for seller with the token
     const foundSeller = await Seller.findOne({
@@ -471,7 +473,7 @@ const getItemDetails = async (req,res) => {
         }
     })
 
-    if(!foundSeller) return res.sendStatus(403) //Forbidden
+    if(!foundSeller) return res.status(400).send({ message : 'Seller not found' })
 
     //getting the required item that belongs to the seller
     const item =  await Item.findOne({
@@ -494,7 +496,7 @@ const getItemDetails = async (req,res) => {
         }
     })
 
-    if(!item) return res.sendStatus(403)
+    if(!item) return res.status(403).send({ message : 'Item does not belong to this seller' })
 
 
     //get categories,cities and itemconditions
@@ -528,7 +530,7 @@ const getItemInformation = async (req,res) => {
     //request variable to get the item
     const itemId = req.query.itemId
 
-    if(!itemId) return res.status(400).json({ 'message' : 'Specify an item id'})
+    if(!itemId) return res.status(400).send({ message : 'Specify an item id'})
     
 
     //getting the relevant item
@@ -555,7 +557,7 @@ const getItemInformation = async (req,res) => {
         }
     })
 
-    if(!item) return res.status(400).json({ 'message' : 'No such item'})
+    if(!item) return res.status(400).send({ message : 'No such item'})
 
     res.status(200).send({
         item : item,
@@ -572,16 +574,17 @@ const getAddItemNecessities = async (req,res) => {
     if(token){
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decodedToken) => {
             if(err){
-                return res.status(400).json({ 'message' : 'jwt error'})
+                return res.status(400).send({ message : 'Invalid Access Token'})
             }else{
                 sellerEmail = decodedToken.email
             }
         })
     }else{
-        res.redirect('/login');
+        //res.redirect('/login');
+        return res.status(400).send({ message : 'No Access Token'})
     }
 
-    if(!sellerEmail) return res.status(400).json({ 'message' : 'User not logged in'})
+    if(!sellerEmail) return res.status(401).send({ message : 'Unauthorized'})
    
     //getting seller details to put default values to the drop down lists
     const foundSeller = await Seller.findOne({
@@ -590,7 +593,7 @@ const getAddItemNecessities = async (req,res) => {
         }
     })
 
-    if(!foundSeller) return res.sendStatus(403) //Forbidden
+    if(!foundSeller) return res.status(400).send({ message : 'Seller not found' })
 
     //getting the seller's city to put to the drop down as default value
     const foundCity = await City.findOne({
@@ -630,16 +633,17 @@ const unpublishItem = async (req,res) => {
     if(token){
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decodedToken) => {
             if(err){
-                return res.status(400).json({ 'message' : 'jwt error'})
+                return res.status(400).send({ message : 'Invalid Access Token'})
             }else{
                 sellerEmail = decodedToken.email
             }
         })
     }else{
-        res.redirect('/login');
+        //res.redirect('/login');
+        return res.status(400).send({ message : 'No Access Token'})
     }
 
-    if(!sellerEmail) return res.status(400).json({ 'message' : 'User not logged in'})
+    if(!sellerEmail) return res.status(401).send({ message : 'Unauthorized'})
    
     const foundSeller = await Seller.findOne({
         where: {
@@ -647,7 +651,7 @@ const unpublishItem = async (req,res) => {
         }
     })
 
-    if(!foundSeller) return res.sendStatus(403) //Forbidden
+    if(!foundSeller) return res.status(400).send({ message : 'Seller not found' })
 
     //getting item that belngs to the user
     const item =  await Item.findOne({
@@ -658,7 +662,7 @@ const unpublishItem = async (req,res) => {
         }
     })
     
-    if(!item) return res.sendStatus(403)
+    if(!item) return res.status(403).send({ message : 'Item does not belong to this seller' })
     
     //removing item by updating the status as 0
     const remItem = await Item.update({
@@ -670,7 +674,7 @@ const unpublishItem = async (req,res) => {
         }
     })
 
-    res.redirect('/account')     
+    return res.status(200).send({ message : 'Successfully Removed Ad' })   
    
 }
 
@@ -683,7 +687,7 @@ const addItem = async (req,res) => {
     const contactregex = /^0[0-9]{9}?$/
 
     if(!contactregex.test(itemContact))
-        return res.status(400).json({'message': 'invalid contact'})
+        return res.status(400).send({message: 'invalid contact'})
 
     
     const itemImages = req.files
@@ -700,7 +704,7 @@ const addItem = async (req,res) => {
 
     //if not all information are given
     if(!itemName || !itemCategory || !itemCondition || !itemPrice || !itemDescription || !itemCity || !itemContact)
-        return res.status(400).json({'message': 'All information are required'})
+        return res.status(400).send({message: 'All information are required'})
 
         const token = req.cookies.jwt
         let sellerEmail 
@@ -708,16 +712,17 @@ const addItem = async (req,res) => {
         if(token){
             jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decodedToken) => {
                 if(err){
-                    return res.status(400).json({ 'message' : 'jwt error'})
+                    return res.status(400).send({ message : 'Invalid Access Token'})
                 }else{
                     sellerEmail = decodedToken.email
                 }
             })
         }else{
-            res.redirect('/login');
+            //res.redirect('/login');
+            return res.status(400).send({ message : 'No Access Token'})
         }
     
-        if(!sellerEmail) return res.status(400).json({ 'message' : 'User not logged in'})
+        if(!sellerEmail) return res.status(401).send({ message : 'Unauthorized'})
        
         const foundSeller = await Seller.findOne({
             where: {
@@ -725,7 +730,7 @@ const addItem = async (req,res) => {
             }
         })
     
-        if(!foundSeller) return res.sendStatus(403) //Forbidden
+        if(!foundSeller) return res.status(400).send({ message : 'Seller not found' })
 
         const dt = formatDate(new Date()).toString()
         
@@ -759,7 +764,7 @@ const addItem = async (req,res) => {
                 status: 1
             }) 
         
-        res.redirect('/account')
+            return res.status(200).send({ message : 'Successfully Published Ad' })   
 }
 
 
@@ -772,7 +777,7 @@ const editItem = async (req,res) => {
     const contactregex = /^0[0-9]{9}?$/
 
     if(!contactregex.test(itemContact))
-        return res.status(400).json({'message': 'invalid contact'})
+        return res.status(400).send({'message': 'invalid contact'})
 
     
     const itemImages = req.files
@@ -798,16 +803,17 @@ const editItem = async (req,res) => {
         if(token){
             jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decodedToken) => {
                 if(err){
-                    return res.status(400).json({ 'message' : 'jwt error'})
+                    return res.status(400).send({ message : 'Invalid Access Token'})
                 }else{
                     sellerEmail = decodedToken.email
                 }
             })
         }else{
-            res.redirect('/login');
+            //res.redirect('/login');
+            return res.status(400).send({ message : 'No Access Token'})
         }
     
-        if(!sellerEmail) return res.status(400).json({ 'message' : 'User not logged in'})
+        if(!sellerEmail) return res.status(401).send({ message : 'Unauthorized'})
        
         const foundSeller = await Seller.findOne({
             where: {
@@ -815,7 +821,7 @@ const editItem = async (req,res) => {
             }
         })
     
-        if(!foundSeller) return res.sendStatus(403) //Forbidden
+        if(!foundSeller) return res.status(400).send({ message : 'Seller not found' })
 
         //get the existing item
         const foundItem= await Item.findOne({
@@ -825,7 +831,7 @@ const editItem = async (req,res) => {
             }
         })
     
-        if(!foundItem) return res.sendStatus(403) //Forbidden
+        if(!foundItem) return res.status(403).send({ message : 'Item does not belong to this seller' })
 
         //updating the item details
         const updateItem = await Item.update({
@@ -884,7 +890,7 @@ const editItem = async (req,res) => {
             }    
         }
     
-        res.redirect('/account')
+        return res.status(200).send({ message : 'Successfully Edited Ad' })   
 }
 
 
@@ -895,28 +901,40 @@ const delImgs = async (req,res) => {
     const token = req.cookies.jwt
     let sellerEmail 
     
+    if(!itemId) return res.status(400).send({ message : 'Specify Item Id'})
+
     if(token){
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decodedToken) => {
             if(err){
-                return res.status(400).json({ 'message' : 'jwt error'})
+                return res.status(400).send({ message : 'Invalid Access Token'})
             }else{
                 sellerEmail = decodedToken.email
             }
         })
     }else{
-        res.redirect('/login');
+        //res.redirect('/login');
+        return res.status(400).send({ message : 'No Access Token'})
     }
 
-    if(!sellerEmail) return res.status(400).json({ 'message' : 'User not logged in'})
+    if(!sellerEmail) return res.status(401).send({ message : 'Unauthorized'})
    
+    const foundSeller = await Seller.findOne({
+        where: {
+            sellerEmail : sellerEmail
+        }
+    })
+
+    if(!foundSeller) return res.status(400).send({ message : 'Seller not found' })
+
     const foundItem = await Item.findOne({
         where: {
             itemId : itemId,
+            sellerId : foundSeller.sellerId,
             status: 1
         }
     })
 
-    if(!foundItem) return res.sendStatus(403) //Forbidden
+    if(!foundItem) return res.status(403).send({ message : 'Item does not belong to this seller' })
 
     const remImg = await ItemImage.update({
         status : 0
@@ -933,7 +951,8 @@ const delImgs = async (req,res) => {
                 status: 1
     })
    
-    res.redirect('/account/edit?itemId='+foundItem.itemId)
+    //res.redirect('/account/edit?itemId='+foundItem.itemId)
+    return res.status(200).send({ message : 'Successfully Removed Item Images', itemId : foundItem.itemId })   
 }
 
 

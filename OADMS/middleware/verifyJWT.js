@@ -17,14 +17,14 @@ const verifyJWT = (req, res, next) => {
     const authHeader = req.headers['authorization']
     const acctoken = authHeader && authHeader.split(' ')[1]  
    
-    if(token != acctoken) return res.redirect('/login')
+    if(token != acctoken) return res.status(403).send({ message : 'Invalid Access Token'})
 
     if(token != null){
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decodedToken) => {
             if(err){
                 //if there's an error with the token, redirecting to login page
                 console.log(err.message)
-                return res.json({success:'forbidden error' , status:403})
+                return res.status(403).send({ message : 'Invalid Access Token'})
                 //res.redirect('/login')
             }else{
                 //console.log(decodedToken)
@@ -35,7 +35,7 @@ const verifyJWT = (req, res, next) => {
     }else{
         //if no token exist, redirecting to login page
         //res.redirect('/login')
-        return res.json({success:'Not logged in error' ,status:401})
+        return res.status(401).send({ message : 'No Access Token'})
     }
     
 }
