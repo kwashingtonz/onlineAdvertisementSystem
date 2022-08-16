@@ -667,6 +667,13 @@ const unpublishItem = async (req,res) => {
 const addItem = async (req,res) => {
     //requsting form-data and files
     const {itemName,itemCategory,itemCondition,itemPrice,itemDescription,itemCity,itemContact} = req.body
+    
+    const contactregex = /^0[0-9]{9}?$/
+
+    if(!contactregex.test(itemContact))
+        return res.status(400).json({'message': 'invalid contact'})
+
+    
     const itemImages = req.files
 
     let itemImgs = []
@@ -749,6 +756,13 @@ const editItem = async (req,res) => {
 
     //getting form-data and files
     const {itemName,itemCategory,itemCondition,itemPrice,itemDescription,itemCity,itemContact} = req.body
+
+    const contactregex = /^0[0-9]{9}?$/
+
+    if(!contactregex.test(itemContact))
+        return res.status(400).json({'message': 'invalid contact'})
+
+    
     const itemImages = req.files
 
     let itemImgs = []

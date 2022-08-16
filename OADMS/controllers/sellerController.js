@@ -3,6 +3,7 @@ const db = require('../models')
 const { sequelize, Sequelize } = require('../models')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const emailvalidator = require('email-validator')
 require('dotenv').config();
 
 
@@ -22,8 +23,17 @@ const maxAge = 3 * 24 * 60 * 60
 
 //register new seller
 const addNewSeller = async (req,res) => {
+    //validations
     const {sellerName,sellerEmail,sellerPassword,sellerCity,sellerContact} = req.body //getting form-data
     
+    if(!emailvalidator.validate(sellerEmail))
+        return res.status(400).json({'message': 'invalid email'})
+
+    const contactregex = /^0[0-9]{9}?$/
+
+    if(!contactregex.test(sellerContact))
+        return res.status(400).json({'message': 'invalid contact'})
+
     const sellerImage = req.file //getting seller image uploaded
     let sellerImg
 
@@ -265,6 +275,15 @@ const updateSellerDetails = async (req,res) => {
 
     //get form-data 
     const {sellerName,sellerContact,sellerCity,sellerEmail,sellerConfirmPassword,sellerCurrentPassword} = req.body
+
+    if(!emailvalidator.validate(sellerEmail))
+        return res.status(400).json({'message': 'invalid email'})
+
+    const contactregex = /^0[0-9]{9}?$/
+
+    if(!contactregex.test(sellerContact))
+        return res.status(400).json({'message': 'invalid contact'})
+
 
     const sellerImage = req.file //get seller Image uploaded
     let sellerImg
