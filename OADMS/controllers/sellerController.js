@@ -289,16 +289,6 @@ const updateSellerDetails = async (req,res) => {
     if(!sellerName || !sellerContact || !sellerCity ||  !sellerEmail || !sellerCurrentPassword  )
         return res.status(400).send({message : 'All information are required'})
 
-     //check whether seller already registered
-     const duplicate = await Seller.findAll({
-        where: {
-            sellerEmail : sellerEmail
-        }
-    })
-
-    if(duplicate.length>0) 
-        return res.status(400).send({ message : 'Seller email already registered' });
-
         let sellerEML 
         //getting logged in seller email from headers
         try {
@@ -309,6 +299,19 @@ const updateSellerDetails = async (req,res) => {
         }
     
     if(!sellerEML) return res.status(401).send({ message : 'Unauthorized'})
+
+
+     //check whether seller already registered
+     const duplicate = await Seller.findAll({
+        where: {
+            sellerEmail : sellerEmail
+        }
+    })
+
+    if(duplicate[0].sellerEmail != sellerEML) 
+        return res.status(400).send({ message : 'Seller email already registered' });
+
+        
 
     //get seller detials
     const foundSeller = await Seller.findOne({
