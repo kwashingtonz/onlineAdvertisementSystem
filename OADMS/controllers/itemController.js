@@ -643,6 +643,15 @@ const unpublishItem = async (req,res) => {
         }
     })
 
+    const remImg= await ItemImage.update({
+        status :0
+    },{
+        where: {
+            itemId : itemId,
+        }
+    })
+
+
     return res.status(200).send({ message : 'Successfully Removed Ad' })   
    
 }

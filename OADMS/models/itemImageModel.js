@@ -23,8 +23,8 @@ module.exports = (sequelize, DataTypes) =>{
                     return null
                 
                 }else{
-
-                    for(var len=0;len<imgNm.split(',').length;len++){
+                    
+                    for(var len=0;len<imgNm?.split(',').length;len++){
                         imgArray[len] = 'http://localhost:3000/'+imgNm.split(',') [len]
                     }
                 }
