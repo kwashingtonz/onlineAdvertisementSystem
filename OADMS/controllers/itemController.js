@@ -120,8 +120,11 @@ const getAllItems = async (req,res) => {
                 }
             }],
             where: {
-                itemName : {[Sequelize.Op.like]: `%${name}%`},
-                status : 1
+                status : 1,
+                [Sequelize.Op.or]: {
+                    itemName : {[Sequelize.Op.like]: `%${name}%`},
+                    itemDescription : {[Sequelize.Op.like]: `%${name}%`}
+                }
             },
             limit, offset
         })
@@ -189,8 +192,11 @@ const getAllItems = async (req,res) => {
             }],
             where: {
                 catId : category,
-                itemName : {[Sequelize.Op.like]: `%${name}%`},
-                status : 1
+                status : 1,
+                [Sequelize.Op.or]: {
+                    itemName : {[Sequelize.Op.like]: `%${name}%`},
+                    itemDescription : {[Sequelize.Op.like]: `%${name}%`}
+                }
             },
             limit, offset
         })
@@ -224,8 +230,11 @@ const getAllItems = async (req,res) => {
             }],
             where: {
                 itemCity : city,
-                itemName : {[Sequelize.Op.like]: `%${name}%`},
-                status : 1
+                status : 1,
+                [Sequelize.Op.or]: {
+                    itemName : {[Sequelize.Op.like]: `%${name}%`},
+                    itemDescription : {[Sequelize.Op.like]: `%${name}%`}
+                }
             },
             limit, offset
         })
@@ -294,9 +303,12 @@ const getAllItems = async (req,res) => {
             }],
             where: {
                 catId: category,
-                itemName : {[Sequelize.Op.like]: `%${name}%`},
                 itemCity : city,
-                status : 1
+                status : 1,
+                [Sequelize.Op.or]: {
+                    itemName : {[Sequelize.Op.like]: `%${name}%`},
+                    itemDescription : {[Sequelize.Op.like]: `%${name}%`}
+                }
             },
             limit, offset
         })
