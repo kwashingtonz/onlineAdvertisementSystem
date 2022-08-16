@@ -27,12 +27,12 @@ const addNewSeller = async (req,res) => {
     const {sellerName,sellerEmail,sellerPassword,sellerCity,sellerContact} = req.body //getting form-data
     
     if(!emailvalidator.validate(sellerEmail))
-        return res.status(400).json({'message': 'invalid email'})
+        return res.status(400).send({ message : 'invalid email'})
 
     const contactregex = /^0[0-9]{9}?$/
 
     if(!contactregex.test(sellerContact))
-        return res.status(400).json({'message': 'invalid contact'})
+        return res.status(400).send({ message : 'invalid contact'})
 
     const sellerImage = req.file //getting seller image uploaded
     let sellerImg
@@ -43,7 +43,7 @@ const addNewSeller = async (req,res) => {
 
     //checking all form-data is available
     if(!sellerName || !sellerEmail || !sellerPassword || !sellerCity || !sellerContact)
-        return res.status(400).json({'message': 'All information are required'})
+        return res.status(400).send({ message : 'All information are required'})
 
     //check whether seller already registered
     const duplicate = await Seller.findAll({
@@ -53,7 +53,7 @@ const addNewSeller = async (req,res) => {
     })
 
     if(duplicate.length>0) 
-        return res.send({'message': 'Seller already registered' });
+        return res.status(400).send({ message : 'Seller already registered' });
     else{
         try{
             //encrypt the password
@@ -85,9 +85,9 @@ const addNewSeller = async (req,res) => {
                 })
             }
             
-            res.redirect('/login?success='+ encodeURIComponent('yes')) //to show a message that successfully registered
+            return res.status(200).send({ message : 'Registered Sucessfully'}) 
         } catch (err){
-            res.status(500).json({'message': err.message })
+            return res.status(500).send({ message : err.message })
         }
     }
 
@@ -98,7 +98,7 @@ const handleSellerLogin = async (req,res) => {
     const {sellerEmail, sellerPassword} = req.body //get form-data
 
     //checking whether form-data is available
-    if(!sellerEmail || !sellerPassword) return res.status(400).json({'message': 'Email and Password are required'})
+    if(!sellerEmail || !sellerPassword) return res.status(400).send({ message : 'Email and Password are required'})
 
     //checking whether seller is available
     const foundSeller = await Seller.findOne({
@@ -109,7 +109,7 @@ const handleSellerLogin = async (req,res) => {
 
     if(!foundSeller) 
        // return res.redirect('/login?avail='+ encodeURIComponent('no'))
-       return res.status(400).json({'message': 'Not a registered user'}) //response that seller is not available
+       return res.status(400).send({ message : 'Not a registered user'}) //response that seller is not available
     else{
         //if seller available
         //evaluate password
@@ -119,10 +119,10 @@ const handleSellerLogin = async (req,res) => {
             const token = accessToken(foundSeller.sellerEmail) //creating access token
             res.cookie('jwt', token, {httpOnly: true, maxAge: maxAge*1000})//creating a cookie with the access token
             //res.redirect('/account')
-            res.json({ message: 'This is Seller Account Listings page',accessToken: token}) // response
+            res.status(200).send({ message: 'Logged In Sucessfully',accessToken: token}) // response
         }else{ 
             //res.redirect('/login?sucess='+ encodeURIComponent('no'))
-            res.status(400).json({'message': 'Email and Password do not match'})
+            res.status(400).send({ message : 'Email and Password do not match'})
         }
     }   
 }
@@ -144,16 +144,17 @@ const getSellerDetails = async (req,res) => {
     if(token){
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decodedToken) => {
             if(err){
-                return res.status(400).json({ 'message' : 'jwt error'})
+                return res.status(400).send({ message : 'Invalid Access Token'})
             }else{
                 sellerEmail = decodedToken.email //get the email of the currently logged in user
             }
         })
     }else{
-        res.redirect('/login'); //redirect or response to login page
+        //res.redirect('/login'); //redirect or response to login page
+        return res.status(400).send({ message : 'No Access Token'})
     }
 
-    if(!sellerEmail) return res.status(400).json({ 'message' : 'User not logged in'})
+    if(!sellerEmail) return res.status(401).send({ message : 'Unauthorized'})
    
     //get seller details of the logged in seller including the cityname , seller image
     const foundSeller = await Seller.findOne({
@@ -179,13 +180,13 @@ const getSellerDetails = async (req,res) => {
         }
     })
 
-    if(!foundSeller) return res.sendStatus(403) //Forbidden - If not requested the curent logged in seller's details
+    if(!foundSeller) return res.status(400).send({ message : 'Seller not found' })
 
     const city =  await City.findAll()//get all cities
     
     //sending response with the seller details and city list
     res.status(200).send({
-        cities : city,
+        //cities : city,
         seller : foundSeller
         })    
    
@@ -197,7 +198,7 @@ const getSellerInfo = async (req,res) => {
   
     const sellerId = req.query.seller  //getting the seller id from the url parameter
 
-    if(!sellerId) return res.status(400).json({ 'message' : 'Specify a sellerId'}) //if not specified
+    if(!sellerId) return res.status(400).send({ message : 'Specify a sellerId'}) //if not specified
 
     //get seller information related to the id
     const foundSeller = await Seller.findOne({
@@ -216,7 +217,7 @@ const getSellerInfo = async (req,res) => {
         }
     })
 
-    if(!foundSeller) return res.status(400).json({ 'message' : 'No such seller'}) //if no such seller
+    if(!foundSeller) return res.status(400).send({ message : 'Seller not found'}) //if no such seller
     
     //get the seller's listings
     const item =  await Item.findAll({
@@ -277,12 +278,12 @@ const updateSellerDetails = async (req,res) => {
     const {sellerName,sellerContact,sellerCity,sellerEmail,sellerConfirmPassword,sellerCurrentPassword} = req.body
 
     if(!emailvalidator.validate(sellerEmail))
-        return res.status(400).json({'message': 'invalid email'})
+        return res.status(400).send({message : 'invalid email'})
 
     const contactregex = /^0[0-9]{9}?$/
 
     if(!contactregex.test(sellerContact))
-        return res.status(400).json({'message': 'invalid contact'})
+        return res.status(400).send({message : 'invalid contact'})
 
 
     const sellerImage = req.file //get seller Image uploaded
@@ -294,7 +295,7 @@ const updateSellerDetails = async (req,res) => {
 
     //checking all necessary information are available
     if(!sellerName || !sellerContact || !sellerCity ||  !sellerEmail || !sellerCurrentPassword  )
-        return res.status(400).json({'message': 'All information are required'})
+        return res.status(400).send({message : 'All information are required'})
 
      //check whether seller already registered
      const duplicate = await Seller.findAll({
@@ -304,7 +305,7 @@ const updateSellerDetails = async (req,res) => {
     })
 
     if(duplicate.length>0) 
-        return res.send({'message': 'Seller email already registered' });
+        return res.status(400).send({ message : 'Seller email already registered' });
 
     const token = req.cookies.jwt //get the access token from cookies
     let sellerEML 
@@ -313,16 +314,17 @@ const updateSellerDetails = async (req,res) => {
     if(token){
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decodedToken) => {
             if(err){
-                return res.status(400).json({ 'message' : 'jwt error'})
+                return res.status(400).send({ message : 'Invalid Access Token'})
             }else{
                 sellerEML = decodedToken.email //getting the seller email
             }
         })
     }else{
-        res.redirect('/login'); //redirect or response if no token available
+        //res.redirect('/login'); //redirect or response if no token available
+        return res.status(400).send({ message : 'No Access Token'})
     }
     
-    if(!sellerEML) return res.status(400).json({ 'message' : 'User not logged in'})
+    if(!sellerEML) return res.status(401).send({ message : 'Unauthorized'})
 
     //get seller detials
     const foundSeller = await Seller.findOne({
@@ -335,7 +337,7 @@ const updateSellerDetails = async (req,res) => {
     if(!sellerConfirmPassword){
         //checking seller is available
         if(!foundSeller) 
-            return res.status(400).json({'message': 'No such seller'})
+            return res.status(400).send({ message : 'Seller not found'})
         else{
             //evaluate password
             const match = await bcrypt.compare(sellerCurrentPassword, foundSeller.sellerPassword); //comparing form-data password and registered password
@@ -388,18 +390,19 @@ const updateSellerDetails = async (req,res) => {
                     }
                 }
                 
-                const tkn = accessToken(sellerEmail) //new access token when email has been updated
-                res.cookie('jwt', tkn, {httpOnly: true, maxAge: maxAge*1000}) //updating cookie
-                res.status(400).json({'message': 'Details Updated', 'acessToken' : tkn}) // response
+                /* const tkn = accessToken(sellerEmail) //new access token when email has been updated
+                res.cookie('jwt', tkn, {httpOnly: true, maxAge: maxAge*1000}) //updating cookie */
+                res.cookie('jwt','',{ maxAge: 1 })
+                res.status(200).send({message : 'Details Updated and Logged Out'}) // response
             }else{ 
-                res.status(400).json({'message': 'Current Password is incorrect'})// if current password and registered password do not match
+                res.status(400).send({message : 'Current Password is incorrect'})// if current password and registered password do not match
             }
         }
     }else{
         //if new password entered
         //check for seller existence
         if(!foundSeller) 
-            return res.status(400).json({'message': 'No such seller'})
+            return res.status(400).send({ message : 'Seller not found'})
         else{
             //evaluate password
             const match = await bcrypt.compare(sellerCurrentPassword, foundSeller.sellerPassword); // compare the current password and registered password
@@ -457,11 +460,13 @@ const updateSellerDetails = async (req,res) => {
                     }
                 }
 
-                const tkn = accessToken(sellerEmail) //create new access token when email changed
+                /* const tkn = accessToken(sellerEmail) //create new access token when email changed
                 res.cookie('jwt', tkn, {httpOnly: true, maxAge: maxAge*1000}) // update cookie with the new access token
-                res.status(400).json({'message': 'Details Updated', 'acessToken' : tkn}) //response
+                res.status(400).json({'message': 'Details Updated', 'acessToken' : tkn}) //response */
+                res.cookie('jwt','',{ maxAge: 1 })
+                return res.status(200).send({message : 'Details Updated and Logged Out'})
             }else{ 
-                res.status(400).json({'message': 'Current Password is incorrect'}) //if passwords do not match with the registered
+                return res.status(400).send({message : 'Current Password is incorrect'}) //if passwords do not match with the registered
             }
         }
     }   
@@ -477,16 +482,17 @@ const removeSellerImage = async (req,res) => {
     if(token){
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decodedToken) => {
             if(err){
-                return res.status(400).json({ 'message' : 'jwt error'})
+                return res.status(400).send({ message : 'Invalid Access Token'})
             }else{
                 sellerEmail = decodedToken.email //getting selleremail form the token
             }
         })
     }else{
-        res.redirect('/login'); //redirect or response if no token available
+        //res.redirect('/login'); //redirect or response if no token available
+        return res.status(400).send({ message : 'No Access Token'})
     }
 
-    if(!sellerEmail) return res.status(400).json({ 'message' : 'User not logged in'})
+    if(!sellerEmail) return res.status(401).send({ message : 'Unauthorized'})
    
     //get seller details
     const foundSeller = await Seller.findOne({
@@ -495,7 +501,7 @@ const removeSellerImage = async (req,res) => {
         }
     })
 
-    if(!foundSeller) return res.sendStatus(403) //Forbidden - if seller is not available
+    if(!foundSeller) return res.status(400).send({ message : 'Seller not found' })
 
     //update status of the current image as 0 to remove
     const remImg = await SellerImage.update({
@@ -514,7 +520,8 @@ const removeSellerImage = async (req,res) => {
         status: 1
     })
    
-    res.redirect('/account/settings') // redirect or response to go back to account settings
+    //res.redirect('/account/settings') // redirect or response to go back to account settings
+    return res.status(200).send({message : 'Avatar Removed'})
 }
 
 

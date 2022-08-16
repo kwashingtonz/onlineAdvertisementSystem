@@ -13,7 +13,7 @@ const Seller = db.sellers
 //Handling Logout
 const handleLogout= async (req,res) => {
     
-    const token = req.cookies.jwt
+    //const token = req.cookies.jwt
     res.cookie('jwt','',{ maxAge: 1 })
     
     //jwtblack.blacklist(token)
