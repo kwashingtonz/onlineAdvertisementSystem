@@ -359,21 +359,34 @@ const updateSellerDetails = async (req,res) => {
                             status: 1
                         })
                     }else{
-                        //if seller image is uploaded at registration 
-                        //updating status of old seller image
-                        const updateImage = await SellerImage.update({  
-                            status: 0
-                        },{where: {
+                        
+                        if(foundImage.imageName == ""){
+                            const updateImage = await SellerImage.update({  
+                                imageName: sellerImg
+                            },{where: {
+                                    sellerId: foundSeller.sellerId,
+                                    imageName: "",
+                                    status: 1
+                                }
+                            })
+                        }else{
+
+                            //if seller image is uploaded at registration 
+                            //updating status of old seller image
+                            const updateImage = await SellerImage.update({  
+                                status: 0
+                            },{where: {
+                                    sellerId: foundSeller.sellerId,
+                                    status: 1
+                                }
+                            })
+                            //insert new seller image
+                            const newImage = await SellerImage.create({
                                 sellerId: foundSeller.sellerId,
+                                imageName: sellerImg,
                                 status: 1
-                            }
-                        })
-                        //insert new seller image
-                        const newImage = await SellerImage.create({
-                            sellerId: foundSeller.sellerId,
-                            imageName: sellerImg,
-                            status: 1
-                        })       
+                            })
+                        }       
                     }
                 }
                 
