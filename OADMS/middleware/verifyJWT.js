@@ -48,10 +48,10 @@ const currentUser = (req,res,next) => {
     if(token){
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decodedToken) => {
             if(err){
-                console.log(err.message)
+           console.log(err.message)
                 //if there's error with the token, the current logged in user details will be null
                 res.locals.user = null
-                next()
+                next()     
             }else{
                 console.log(decodedToken)
                 let seller = await Seller.findAll({
